@@ -6,13 +6,14 @@ import {
     Sparkles, Eye, CheckCircle2, Clock, Send, BarChart3, AlertCircle, RefreshCw,
     FileText, Image, Video, MessageSquare, Target,
 } from 'lucide-react';
-import { campaigns, audiences, companyKeywords, testUsers, CONTENT_TYPE_COLORS } from '../data/mockData';
+import { campaigns, audiences, companyKeywords, testUsers, CONTENT_TYPE_COLORS, touchpoints } from '../data/mockData';
 import { useAuth } from '../context/AuthContext';
 import { useTasks } from '../context/TaskContext';
 import { useContents, CONTENT_STATUSES } from '../context/ContentContext';
 import TaskDetailModal from '../components/TaskDetailModal';
 import ContentDetailModal from '../components/ContentDetailModal';
 import NewContentModal from '../components/NewContentModal';
+import PageHelp from '../components/PageHelp';
 
 // ─── Status Config ───
 const statusConfig = {
@@ -270,6 +271,15 @@ export default function CampaignDetailPage() {
                         <p className="page-subtitle">{campaign.description}</p>
                     </div>
                     <div className="page-header-actions">
+                        <PageHelp title="Kampagnen-Details">
+                            <p style={{ marginBottom: '12px' }}>Die Detailansicht einer Kampagne bündelt alle relevanten Workstreams zu diesem Projekt.</p>
+                            <ul className="help-list">
+                                <li><strong>Übersicht:</strong> Eine Zusammenfassung der zugehörigen Zielgruppen, SEO-Keywords, sowie des Timings und der Zielsetzung der Kampagne.</li>
+                                <li><strong>Creatives & Aufgaben (Workflow):</strong> Hier siehst du das Mini-Kanban Board exklusiv für diese Kampagne. Ideal für Manager, um die Design-Realisierung zu überwachen.</li>
+                                <li><strong>Content (Redaktion):</strong> Hier siehst du alle geplanten Beiträge (Social Media, Blog, E-Mail) für diese Kampagne. Verknüpfe direkt Content mit den dazugehörigen Aufgaben.</li>
+                                <li><strong>Performance:</strong> Analytics und Spendings-Tracking speziell heruntergebrochen auf die laufende Kampagne.</li>
+                            </ul>
+                        </PageHelp>
                         <button className="btn btn-secondary"><Edit size={16} /> Bearbeiten</button>
                         <button className="btn btn-ghost btn-icon"><MoreVertical size={16} /></button>
                     </div>
@@ -309,17 +319,42 @@ export default function CampaignDetailPage() {
                                 <div className="stat-card warning"><span className="stat-card-label">CTR</span><span className="stat-card-value" style={{ fontSize: 'var(--font-size-xl)' }}>{campaign.kpis.ctr}%</span></div>
                             </div>
 
-                            {/* Plattformen & Systeme */}
                             <div className="card">
-                                <div className="card-title" style={{ marginBottom: '12px' }}>Plattformen & Kanäle</div>
+                                <div className="card-title" style={{ marginBottom: '12px' }}>Verknüpfte Kanäle & Touchpoints</div>
                                 <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                                    {campaign.channels.map(ch => {
+                                    {(campaign.touchpointIds || []).map(tpId => {
+                                        const tp = touchpoints.find(t => t.id === tpId);
+                                        if (!tp) return null;
+                                        const ChIcon = PLATFORM_ICONS[tp.name] || PLATFORM_ICONS[tp.type] || Globe;
+                                        return (
+                                            <div
+                                                key={tpId}
+                                                onClick={() => navigate('/touchpoints', { state: { selectedTpId: tpId } })}
+                                                style={{
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    gap: '8px',
+                                                    padding: '10px 16px',
+                                                    background: 'var(--bg-hover)',
+                                                    borderRadius: 'var(--radius-md)',
+                                                    border: '1px solid var(--border-color)',
+                                                    cursor: 'pointer'
+                                                }}
+                                            >
+                                                <ChIcon size={16} style={{ color: 'var(--color-primary)' }} />
+                                                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                                    <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600 }}>{tp.name}</span>
+                                                    <span style={{ fontSize: '0.65rem', color: 'var(--text-tertiary)' }}>{tp.type}</span>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                    {(!campaign.touchpointIds || campaign.touchpointIds.length === 0) && campaign.channels.map(ch => {
                                         const ChIcon = PLATFORM_ICONS[ch] || Globe;
                                         return (
                                             <div key={ch} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 16px', background: 'var(--bg-hover)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
                                                 <ChIcon size={16} style={{ color: 'var(--color-primary)' }} />
                                                 <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500 }}>{ch}</span>
-                                                <span className="badge badge-success" style={{ fontSize: '0.6rem' }}>Aktiv</span>
                                             </div>
                                         );
                                     })}

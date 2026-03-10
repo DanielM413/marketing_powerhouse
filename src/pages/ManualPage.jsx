@@ -180,7 +180,21 @@ export default function ManualPage() {
                             Kampagnen können Plattform-übergreifend sein. Du kannst z.B. eine "Q3 Webinar" Kampagne anlegen und darunter Content für E-Mail, LinkedIn und Google Ads bündeln.
                         </TipBox>
 
-                        <SectionTitle icon={Calendar} title="3. Content-Kalender & Redaktionsplanung" color="#f59e0b" />
+                        <SectionTitle icon={Map} title="3. Customer Journey & Touchpoints planen" color="#ec4899" />
+                        <div style={{ color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: '24px' }}>
+                            <p style={{ marginBottom: '16px' }}>Kampagnen und Zielgruppen entfalten ihre volle Wirkung erst, wenn sie an den richtigen Orten (Touchpoints) zur richtigen Zeit in der richtigen Phase zusammentreffen.</p>
+                            <ul style={{ listStyleType: 'disc', paddingLeft: '24px', marginBottom: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                <li><strong>Touchpoints:</strong> Unter "Kanäle & Touchpoints" pflegst du die Single-Source-of-Truth eurer Marketingwege. (z.B. Google Link, Social Media Page, Sales-Telefonnummer). Gehe sicher, dass diese aktuell sind.</li>
+                                <li><strong>Customer Journey (ASIDAS):</strong> Unter "Customer Journey" verknüpfst du diese Touchpoints mit den psychologischen Phasen eurer Personas. Ihr nutzt das moderne ASIDAS Modell (Attention, Search, Interest, Desire, Action, Share).</li>
+                                <li>Die Matrix hilft dir zu erkennen, ob eure Kampagnen-Inhalte tatsächlich die Pain Points der User lösen und auf welchen Touchpoints ihr Content publizieren müsst.</li>
+                            </ul>
+                        </div>
+                        <PlaceholderImage
+                            title="Customer Journey Board" icon={Map} color="#ec4899"
+                            description="Zeigt das ASIDAS-Board mit den verlinkten Touchpoints und den Emotionen der Zielgruppe in jeder Phase."
+                        />
+
+                        <SectionTitle icon={Calendar} title="4. Content-Kalender & Redaktionsplanung" color="#f59e0b" />
                         <div style={{ color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: '24px' }}>
                             <p style={{ marginBottom: '16px' }}>Der Content-Kanal ist dein Redaktionsplan. Er bündelt alle Beiträge über alle Plattformen in einer Kalender- und Listenansicht.</p>
                             <ul style={{ listStyleType: 'disc', paddingLeft: '24px', marginBottom: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -194,7 +208,7 @@ export default function ManualPage() {
                             description="Zeigt den Monatskalender. Manche Einträge sind sauber farbig, manche leuchten rot wegen fehlenden Aufgaben."
                         />
 
-                        <SectionTitle icon={CheckSquare} title="4. Aufgaben-Delegation (Das Briefing)" color="#f59e0b" />
+                        <SectionTitle icon={CheckSquare} title="5. Aufgaben-Delegation (Das Briefing)" color="#f59e0b" />
                         <div style={{ color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: '24px' }}>
                             <p style={{ marginBottom: '16px' }}>Wenn der Content feststeht, musst du der Umsetzung (den Members) genau erklären, was zu tun ist.</p>
                             <ul style={{ listStyleType: 'disc', paddingLeft: '24px', marginBottom: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -205,7 +219,7 @@ export default function ManualPage() {
                             </ul>
                         </div>
 
-                        <SectionTitle icon={Wallet} title="5. Budget & Controlling" color="#3b82f6" />
+                        <SectionTitle icon={Wallet} title="6. Budget & Controlling" color="#3b82f6" />
                         <div style={{ color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: '24px' }}>
                             <p style={{ marginBottom: '16px' }}>Als Manager musst du die Kosten im Blick behalten. Die Budget-Ansicht hilft dir dabei.</p>
                             <ul style={{ listStyleType: 'disc', paddingLeft: '24px', marginBottom: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>

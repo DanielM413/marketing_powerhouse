@@ -3,7 +3,7 @@ import { Calendar, FileText, ListChecks, AlertTriangle, CheckCircle, Plus, Clock
 import { useAuth } from '../context/AuthContext';
 import { useContents, CONTENT_STATUSES, CONTENT_STATUS_ORDER } from '../context/ContentContext';
 import { useTasks } from '../context/TaskContext';
-import { campaigns, testUsers, CONTENT_TYPE_COLORS } from '../data/mockData';
+import { campaigns, testUsers, CONTENT_TYPE_COLORS, touchpoints } from '../data/mockData';
 
 const CONTENT_TYPE_LABELS = {
     social: 'Social Media', email: 'E-Mail', ads: 'Ads / Anzeige', content: 'Blog / Content', event: 'Event'
@@ -25,6 +25,11 @@ export default function ContentDetailModal({ content, onClose }) {
     const getCampaignName = (cId) => {
         if (!cId) return 'Ohne Kampagne';
         return campaigns.find(c => c.id === cId)?.name || 'Unbekannt';
+    };
+
+    const getTouchpointName = (tpId) => {
+        if (!tpId) return 'Nicht verknüpft';
+        return touchpoints.find(tp => tp.id === tpId)?.name || 'Unbekannt';
     };
 
     const linkedTasks = tasks.filter(t => content.taskIds && content.taskIds.includes(t.id));
@@ -160,6 +165,16 @@ export default function ContentDetailModal({ content, onClose }) {
                                 </select>
                             ) : (
                                 <div>{CONTENT_TYPE_LABELS[content.contentType]}</div>
+                            )}
+
+                            <div style={{ color: 'var(--text-tertiary)' }}>Touchpoint:</div>
+                            {isEditing ? (
+                                <select className="form-select" value={edited.touchpointId || ''} onChange={e => setEdited({ ...edited, touchpointId: e.target.value || null })}>
+                                    <option value="">Kein Touchpoint</option>
+                                    {touchpoints.map(tp => <option key={tp.id} value={tp.id}>{tp.name} ({tp.type})</option>)}
+                                </select>
+                            ) : (
+                                <div style={{ fontWeight: 500, color: 'var(--color-primary)' }}>{getTouchpointName(content.touchpointId)}</div>
                             )}
 
                             <div style={{ color: 'var(--text-tertiary)' }}>Autor:</div>

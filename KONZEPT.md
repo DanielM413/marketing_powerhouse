@@ -182,6 +182,20 @@ const { can, isRole, currentUser } = useAuth();
 - [x] Modal für neue Persona
 - [ ] Persona bearbeiten/löschen / Templates
 
+### 🆕 ✅ Customer Journey (`/journeys`)
+- [x] **ASIDAS-Funnel Ansicht** (Attention, Search, Interest, Desire, Action, Share)
+- [x] **Omnipräsenz-Matrix**: Search und Share werden als kontinuierliche, omnipräsente Verhaltensweisen visualisiert, die den Nutzer durchgehend begleiten.
+- [x] **Deep-Linking Content**: Realer Content aus der Redaktionsplanung (`initialContents`) ist direkt in den Stages verlinkt und kann per Modal geöffnet werden.
+- [x] **Touchpoint-Navigation**: Klick auf einen Journey-Touchpoint führt direkt in das Kanal-Management mit Fokus auf diesen Kanal.
+- [x] **Vertriebs-Handoff**: Visueller Trigger für den Übergang von Marketing zu Sales in der Action-Phase.
+- [x] **KPIs & Metriken**: Trends und Kennzahlen pro Stage zur Erfolgsmessung der Journey.
+
+### 🆕 ✅ Kanäle & Touchpoints (`/touchpoints`)
+- [x] **Single-Source-of-Truth**: Alle eingesetzten Kanäle zentral angelegt (Google Ads, LinkedIn, E-Mail CRM, etc.).
+- [x] **Bidirektionale Analyse**: Einblick, welche Kampagnen UND welcher Content gerade auf diesem Kanal ausgespielt werden.
+- [x] **Navigation State**: Unterstützung von Deep-Links aus anderen Modulen (Journeys/Kampagnen).
+- [x] **Navigation**: Direkte Verlinkung zurück zur Kampagnen-Detailseite.
+
 ### 🆕 ✅ Digitale Positionierung (`/positioning`)
 - [x] **Block 1: Unternehmens-DNA** (Name, Tagline, Gründung, Branche, Standort, ...)
 - [x] **Block 2: Digitale Identität** (Vision, Mission, 5 Unternehmenswerte mit Icons)
@@ -228,6 +242,7 @@ const { can, isRole, currentUser } = useAuth();
 - [x] **Handbuch & Workflow** (`/manual`): Rollenspezifische Anleitung für Admin, Manager und Member
 - [x] Interaktive Reiter pro Rolle (Strategie, Planung, Umsetzung)
 - [x] Visuelle Platzhalter-Illustartionen für Screenshots
+- [x] **Kontextuelle Hilfe (`PageHelp`)**: Einheitliche `PageHelp.jsx` Komponente auf allen Hauptseiten (Dashboard, Kampagnen, SEO, Budget, etc.) zur detaillierten Erklärung der jeweiligen Screen-Funktionen.
 
 ### ✅ Einstellungen
 - [x] Allgemein, Team-Übersicht, Integrationen, Benachrichtigungen

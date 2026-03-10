@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { companyPositioning, companyKeywords } from '../data/mockData';
 import { useAuth } from '../context/AuthContext';
+import PageHelp from '../components/PageHelp';
 
 const sectionIcons = {
     dna: Building2,
@@ -112,6 +113,16 @@ export default function PositioningPage() {
                     </p>
                 </div>
                 <div className="page-header-actions">
+                    <PageHelp title="Digitale Positionierung">
+                        <p style={{ marginBottom: '12px' }}>Dieses Modul ist das Gehirn eurer Marke. Es dient als "Single Source of Truth", an der sich alle Kampagnen, Creatives und KI-Assistenten messen lassen.</p>
+                        <ul className="help-list">
+                            <li><strong>Unternehmens-DNA:</strong> Die harten Fakten zu Eurem Business.</li>
+                            <li><strong>Vision, Mission & Werte:</strong> Das "Warum". Dies gibt später allen Copywritern die Vorlage, wie der Benefit beim Kunden ankommen muss.</li>
+                            <li><strong>Tone of Voice:</strong> Diese Parameter (Dos & Don'ts) ziehen sich die angeschlossenen KI-Modelle tief in ihre Prompts. Definiere die Sprache hier sehr exakt.</li>
+                            <li><strong>Schlüsselbegriffe:</strong> Wenn es Wörter gibt, die ihr konsequent besetzen wollt (SEO relevant) kommen sie hier rein.</li>
+                            <li><strong>Admin Only:</strong> Die Pflege dieses Kernmoduls ist nur Administratoren mit der entsprechenden Berechtigung vorbehalten.</li>
+                        </ul>
+                    </PageHelp>
                     {!canEdit && (
                         <div style={{
                             display: 'flex', alignItems: 'center', gap: '6px',

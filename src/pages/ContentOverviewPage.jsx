@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { Plus, Calendar, AlertTriangle, CheckCircle, FileText, Filter, X } from 'lucide-react';
 import { useContents, CONTENT_STATUSES, CONTENT_STATUS_ORDER } from '../context/ContentContext';
 import { useTasks } from '../context/TaskContext';
-import { campaigns, CONTENT_TYPE_COLORS } from '../data/mockData';
+import { campaigns, CONTENT_TYPE_COLORS, touchpoints } from '../data/mockData';
 import { useAuth } from '../context/AuthContext';
 import ContentDetailModal from '../components/ContentDetailModal';
 import NewContentModal from '../components/NewContentModal';
+import PageHelp from '../components/PageHelp';
 
 const CONTENT_TYPE_LABELS = {
     social: 'Social Media', email: 'E-Mail', ads: 'Ads / Anzeige', content: 'Blog / Content', event: 'Event'
@@ -23,6 +24,17 @@ export default function ContentOverviewPage() {
     const getCampaignName = (cId) => {
         if (!cId) return 'Ohne Kampagne';
         return campaigns.find(c => c.id === cId)?.name || 'Unbekannt';
+    };
+
+    const getTouchpointBadge = (tpId) => {
+        if (!tpId) return null;
+        const tp = touchpoints.find(t => t.id === tpId);
+        if (!tp) return null;
+        return (
+            <span className="badge" style={{ background: 'var(--bg-hover)', border: '1px solid var(--border-color)', fontSize: '0.65rem', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                🔗 {tp.name}
+            </span>
+        );
     };
 
     const getLinkedTasks = (content) => {
@@ -50,7 +62,15 @@ export default function ContentOverviewPage() {
                     <p className="page-subtitle">Alle geplanten und veröffentlichten Inhalte im Überblick</p>
                 </div>
                 <div className="page-header-actions">
-                    {can('create') && (
+                    <PageHelp title="Content-Übersicht">
+                        <p style={{ marginBottom: '12px' }}>Hier laufen alle Redaktionsinhalte tabellarisch zusammen, egal auf welcher Plattform sie spielen.</p>
+                        <ul className="help-list">
+                            <li><strong>KPI Board:</strong> Du siehst direkt, welcher Content bereits safe eingeplant ist und wie viele Posts in der Pipeline liegen.</li>
+                            <li><strong>Filtern:</strong> Suche gezielt nach "ohne Aufgaben" (rot markiert), um fehlende Team-Delegation aufzudecken oder filter den Status runter auf fertig produzierte Assets.</li>
+                            <li><strong>Detail-Management:</strong> Mit einem Klick auf eine Inhalts-Kachel kannst du die Meta-Daten des Posts editieren, checken zu welcher Kampagne er gehört oder direkt neue Aufgabenhülsen (zur Umsetzung des Posts) erstellen.</li>
+                        </ul>
+                    </PageHelp>
+                    {can('canEditContent') && (
                         <button className="btn btn-primary" onClick={() => setShowNewContent(true)}>
                             <Plus size={16} /> Neuer Content
                         </button>
@@ -134,6 +154,7 @@ export default function ContentOverviewPage() {
                             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '12px' }}>
                                 <span className={`badge badge-${CONTENT_TYPE_COLORS[cnt.contentType] || 'info'}`} style={{ fontSize: '0.65rem' }}>{cnt.platform}</span>
                                 <span className="badge" style={{ background: 'var(--bg-hover)', fontSize: '0.65rem' }}>{CONTENT_TYPE_LABELS[cnt.contentType] || cnt.contentType}</span>
+                                {getTouchpointBadge(cnt.touchpointId)}
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--border-color)', paddingTop: '10px' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>

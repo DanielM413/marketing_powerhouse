@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Plus, Search, Users, Target, Megaphone, ChevronRight, Tag, MapPin, Briefcase, Heart } from 'lucide-react';
 import { audiences, campaigns } from '../data/mockData';
+import PageHelp from '../components/PageHelp';
+import AudienceDetailModal from '../components/AudienceDetailModal';
 
 const segmentConfig = {
     'B2C': { badge: 'badge-info', label: 'B2C' },
@@ -38,6 +40,15 @@ export default function AudiencesPage() {
                     </p>
                 </div>
                 <div className="page-header-actions">
+                    <PageHelp title="Zielgruppen & Avatare">
+                        <p style={{ marginBottom: '12px' }}>Werbt nicht ins Leere. Ohne klare Zielgruppen ist jedes Budget vergeudet. Erstelle hier eure Traumkunden.</p>
+                        <ul className="help-list">
+                            <li><strong>Personas anlegen:</strong> Generiere "Buyer Personas" (Käufer) oder "User Personas" (Nutzer) basierend auf echten demografischen Daten.</li>
+                            <li><strong>Schmerzpunkte (Pain Points):</strong> Das wichtigste Feld! Formuliere extrem genau, welche Alltagsprobleme die Persona hat, damit eure Ads genau in diese Wunde treffen können.</li>
+                            <li><strong>Ziele:</strong> Was will die Persona erreichen? Das wird euer Angebot.</li>
+                            <li><strong>Kampagnen-Kopplung:</strong> Wenn du auf eine Persona klickst, siehst du rechts im Detail-Reiter, in welchen aktuellen Kampagnen diese Person zielgenau beworben wird.</li>
+                        </ul>
+                    </PageHelp>
                     <button className="btn btn-primary" onClick={() => setShowNewAudienceModal(true)}>
                         <Plus size={16} />
                         Neue Persona
@@ -81,9 +92,9 @@ export default function AudiencesPage() {
                 </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: selectedAudience ? '1fr 380px' : '1fr', gap: '20px', alignItems: 'start' }}>
+            
                 {/* Personas Grid */}
-                <div style={{ display: 'grid', gridTemplateColumns: selectedAudience ? '1fr' : 'repeat(auto-fill, minmax(340px, 1fr))', gap: '16px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: '16px' }}>
                     {filtered.map(audience => {
                         const linkedCampaigns = getLinkedCampaigns(audience.id);
                         const isSelected = selectedAudience?.id === audience.id;
@@ -166,123 +177,13 @@ export default function AudiencesPage() {
                     })}
                 </div>
 
-                {/* Detail Panel */}
-                {selectedAudience && (
-                    <div className="card animate-in" style={{ position: 'sticky', top: '24px', padding: '24px' }}>
-                        {/* Header */}
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '20px' }}>
-                            <div className="persona-avatar persona-avatar--lg" style={{ background: selectedAudience.color }}>
-                                {selectedAudience.initials}
-                            </div>
-                            <div>
-                                <h2 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 700, marginBottom: '4px' }}>{selectedAudience.name}</h2>
-                                <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                                    <span className={`badge ${segmentConfig[selectedAudience.segment].badge}`}>{selectedAudience.segment}</span>
-                                    <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>
-                                        {typeConfig[selectedAudience.type].icon} {typeConfig[selectedAudience.type].label}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Demografie */}
-                        <div className="detail-section">
-                            <div className="detail-section-title">Demografie</div>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                                {[
-                                    { label: 'Alter', value: selectedAudience.age + ' J.' },
-                                    { label: 'Geschlecht', value: selectedAudience.gender },
-                                    { label: 'Standort', value: selectedAudience.location },
-                                    { label: 'Einkommen', value: selectedAudience.income },
-                                    { label: 'Bildung', value: selectedAudience.education },
-                                    { label: 'Berufsfeld', value: selectedAudience.jobTitle },
-                                ].map(item => (
-                                    <div key={item.label} style={{ background: 'var(--bg-elevated)', borderRadius: 'var(--radius-sm)', padding: '10px 12px' }}>
-                                        <div style={{ fontSize: '0.6875rem', color: 'var(--text-tertiary)', marginBottom: '2px' }}>{item.label}</div>
-                                        <div style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500 }}>{item.value}</div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Pain Points */}
-                        <div className="detail-section">
-                            <div className="detail-section-title">😤 Pain Points</div>
-                            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                                {selectedAudience.painPoints.map(p => (
-                                    <li key={p} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>
-                                        <span style={{ color: '#ef4444', marginTop: '1px' }}>●</span> {p}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-
-                        {/* Goals */}
-                        <div className="detail-section">
-                            <div className="detail-section-title">🎯 Ziele & Motivationen</div>
-                            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                                {selectedAudience.goals.map(g => (
-                                    <li key={g} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>
-                                        <span style={{ color: '#10b981', marginTop: '1px' }}>●</span> {g}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-
-                        {/* Kanäle */}
-                        <div className="detail-section">
-                            <div className="detail-section-title">📡 Bevorzugte Kanäle</div>
-                            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                                {selectedAudience.preferredChannels.map(ch => (
-                                    <span key={ch} className="keyword-tag keyword-tag--read">{ch}</span>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Customer Journey */}
-                        <div className="detail-section">
-                            <div className="detail-section-title">🗺️ Customer Journey Phase</div>
-                            <div style={{ background: 'var(--bg-elevated)', borderRadius: 'var(--radius-sm)', padding: '10px 14px', fontSize: 'var(--font-size-xs)', fontWeight: 600, color: 'var(--color-primary)' }}>
-                                {selectedAudience.journeyPhase}
-                            </div>
-                        </div>
-
-                        {/* Entscheidungsprozess */}
-                        <div className="detail-section">
-                            <div className="detail-section-title">🧠 Entscheidungsprozess</div>
-                            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', lineHeight: 1.6, margin: 0 }}>
-                                {selectedAudience.decisionProcess}
-                            </p>
-                        </div>
-
-                        {/* Verknüpfte Kampagnen */}
-                        <div className="detail-section" style={{ borderBottom: 'none', paddingBottom: 0 }}>
-                            <div className="detail-section-title">
-                                <Megaphone size={12} style={{ display: 'inline', marginRight: '4px' }} />
-                                Verknüpfte Kampagnen
-                            </div>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                                {getLinkedCampaigns(selectedAudience.id).map(c => (
-                                    <div key={c.id} style={{
-                                        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                                        padding: '8px 12px', background: 'var(--bg-elevated)', borderRadius: 'var(--radius-sm)',
-                                    }}>
-                                        <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500 }}>{c.name}</span>
-                                        <span className={`badge ${c.status === 'active' ? 'badge-success' : c.status === 'planned' ? 'badge-info' : 'badge-warning'}`} style={{ fontSize: '0.6rem' }}>
-                                            {c.status === 'active' ? 'Aktiv' : c.status === 'planned' ? 'Geplant' : c.status}
-                                        </span>
-                                    </div>
-                                ))}
-                                {getLinkedCampaigns(selectedAudience.id).length === 0 && (
-                                    <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', margin: 0 }}>
-                                        Keine Kampagnen verknüpft
-                                    </p>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                )}
-            </div>
+                            {/* Detail Modal */}
+            {selectedAudience && (
+                <AudienceDetailModal
+                    audience={selectedAudience}
+                    onClose={() => setSelectedAudience(null)}
+                />
+            )}
 
             {/* New Audience Modal */}
             {showNewAudienceModal && (

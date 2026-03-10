@@ -12,6 +12,8 @@ import SettingsPage from './pages/SettingsPage';
 import AudiencesPage from './pages/AudiencesPage';
 import PositioningPage from './pages/PositioningPage';
 import ContentOverviewPage from './pages/ContentOverviewPage';
+import CustomerJourneyPage from './pages/CustomerJourneyPage';
+import TouchpointsPage from './pages/TouchpointsPage';
 import ManualPage from './pages/ManualPage';
 
 function AppRoutes() {
@@ -29,6 +31,8 @@ function AppRoutes() {
           <Route path="/campaigns" element={<CampaignsPage />} />
           <Route path="/campaigns/:id" element={<CampaignDetailPage />} />
           <Route path="/audiences" element={<AudiencesPage />} />
+          <Route path="/journeys" element={<CustomerJourneyPage />} />
+          <Route path="/touchpoints" element={<TouchpointsPage />} />
           <Route path="/content" element={<ContentCalendarPage />} />
           <Route path="/content-overview" element={<ContentOverviewPage />} />
           <Route path="/budget" element={<BudgetPage />} />

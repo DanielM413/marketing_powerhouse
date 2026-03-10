@@ -3,6 +3,7 @@ import { Plus, Calendar, CheckSquare, Clock, ArrowRight, User, ExternalLink, Glo
 import { useTasks } from '../context/TaskContext';
 import { campaigns } from '../data/mockData';
 import TaskDetailModal from '../components/TaskDetailModal';
+import PageHelp from '../components/PageHelp';
 
 // We map our 10-step creative status model to 5 Kanban lanes for the overview
 const STATUS_GROUPS = [
@@ -80,6 +81,16 @@ export default function TasksPage() {
                     <p className="page-subtitle">Alle Kampagnen-Creatives und anstehenden Tasks im Überblick ({tasks.length})</p>
                 </div>
                 <div className="page-header-actions">
+                    <PageHelp title="Aufgaben-Kanban & Delegation">
+                        <p style={{ marginBottom: '12px' }}>Willkommen im Ticket-Board! Hier werden alle offenen Aufträge für Creatives und Content-Elemente verwaltet.</p>
+                        <ul className="help-list">
+                            <li><strong>To Do / Offen:</strong> Hier landen alle frischen Aufgaben, die an das kreative Team delegiert wurden.</li>
+                            <li><strong>Detailansicht:</strong> Klicke auf eine Kartekrte, um das Briefing des Managers zu lesen und den zugehörigen Content einzusehen.</li>
+                            <li><strong>Ressourcen-Link (WICHTIG):</strong> Sobald du als Bearbeiter fertig bist, lade deine Dateien im Unternehmens-OneDrive hoch und speichere den Link in dieser Aufgabe.</li>
+                            <li><strong>Status Updaten:</strong> Pflege den Status deiner Aufgaben gewissenhaft (auf In Progress oder Review), damit der Manager weiß, dass die Datei zur Freigabe liegt.</li>
+                            <li><strong>Ansichten:</strong> Oben rechts kannst du zwischen Kanban-Board und Listen-Ansicht wechseln.</li>
+                        </ul>
+                    </PageHelp>
                     <div style={{ display: 'flex', gap: '4px', background: 'var(--bg-elevated)', borderRadius: 'var(--radius-sm)', padding: '2px' }}>
                         <button className={`btn btn-sm ${view === 'kanban' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setView('kanban')}><GripVertical size={14} /> Kanban</button>
                         <button className={`btn btn-sm ${view === 'list' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setView('list')}><LayoutList size={14} /> Liste</button>

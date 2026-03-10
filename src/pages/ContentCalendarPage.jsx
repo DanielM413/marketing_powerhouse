@@ -6,6 +6,7 @@ import { CONTENT_TYPE_COLORS } from '../data/mockData';
 import { useAuth } from '../context/AuthContext';
 import ContentDetailModal from '../components/ContentDetailModal';
 import NewContentModal from '../components/NewContentModal';
+import PageHelp from '../components/PageHelp';
 
 const daysOfWeek = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
 const monthNames = [
@@ -63,11 +64,19 @@ export default function ContentCalendarPage() {
                     <p className="page-subtitle">Redaktionsplanung über alle Kanäle hinweg ({contents.length} Inhalte)</p>
                 </div>
                 <div className="page-header-actions">
+                    <PageHelp title="Content-Kalender">
+                        <p style={{ marginBottom: '12px' }}>Der Content-Kalender ist dein tägliches Navigationsinstrument für alle anstehenden Veröffentlichungen.</p>
+                        <ul className="help-list">
+                            <li><strong>Die Ansicht:</strong> Zeigt dir alle geplanten Contents des aktuellen Monats. Mit den Buttons oben rechts kannst du auf eine chronologische Listen-Ansicht umschalten.</li>
+                            <li><strong>Rot markiert:</strong> Ein Eintrag leuchtet rot auf und zeigt ein Warndreieck? Das bedeutet, dass es sich nur um eine Content-Idee handelt und <strong>noch keine Aufgabe</strong> zur Umsetzung zugewiesen wurde!</li>
+                            <li><strong>Content planen:</strong> Klicke auf den blauen Button, um direkt neue Beitrage zu terminieren.</li>
+                        </ul>
+                    </PageHelp>
                     <div style={{ display: 'flex', gap: '4px', background: 'var(--bg-elevated)', borderRadius: 'var(--radius-sm)', padding: '2px' }}>
                         <button className={`btn btn-sm ${view === 'month' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setView('month')}>Monat</button>
                         <button className={`btn btn-sm ${view === 'list' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setView('list')}>Liste</button>
                     </div>
-                    {can('create') && (
+                    {can('canEditContent') && (
                         <button className="btn btn-primary" onClick={() => setShowNewContentModal(true)}>
                             <Plus size={16} /> Content planen
                         </button>

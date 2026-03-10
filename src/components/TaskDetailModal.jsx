@@ -3,7 +3,7 @@ import { Calendar, CheckSquare, Clock, ArrowRight, User, ExternalLink, Globe, Ed
 import { useAuth } from '../context/AuthContext';
 import { useTasks } from '../context/TaskContext';
 import { useContents, CONTENT_STATUSES } from '../context/ContentContext';
-import { campaigns, testUsers } from '../data/mockData';
+import { campaigns, testUsers, touchpoints } from '../data/mockData';
 
 const UI_STATE_LABELS = {
     draft: 'Entwurf', ai_generating: 'KI generiert…', ai_ready: 'KI-Vorschlag', review: 'Im Review', revision: 'Überarbeitung',
@@ -26,6 +26,11 @@ export default function TaskDetailModal({ task, onClose }) {
     const getCampaignName = (campaignId) => {
         if (!campaignId) return 'Allgemein';
         return campaigns.find(c => c.id === campaignId)?.name || 'Unbekannte Kampagne';
+    };
+
+    const getTouchpointName = (tpId) => {
+        if (!tpId) return 'Nicht verknüpft';
+        return touchpoints.find(tp => tp.id === tpId)?.name || 'Unbekannt';
     };
 
     const handleSave = () => {
@@ -134,6 +139,16 @@ export default function TaskDetailModal({ task, onClose }) {
                                 </select>
                             ) : (
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600 }}><User size={14} style={{ color: 'var(--color-primary)' }} /> {task.assignee || 'Unzugewiesen'}</div>
+                            )}
+
+                            <div style={{ color: 'var(--text-tertiary)' }}>Touchpoint:</div>
+                            {isEditing ? (
+                                <select className="form-select" value={editedTask.touchpointId || ''} onChange={e => setEditedTask({ ...editedTask, touchpointId: e.target.value || null })}>
+                                    <option value="">Kein Touchpoint</option>
+                                    {touchpoints.map(tp => <option key={tp.id} value={tp.id}>{tp.name} ({tp.type})</option>)}
+                                </select>
+                            ) : (
+                                <div style={{ fontWeight: 500, color: 'var(--color-primary)' }}>{getTouchpointName(task.touchpointId)}</div>
                             )}
 
                             <div style={{ height: '1px', background: 'var(--border-color)', gridColumn: '1 / -1', margin: '4px 0' }} />

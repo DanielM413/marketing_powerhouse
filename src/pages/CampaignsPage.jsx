@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Plus, Search, Calendar, Users, Bot, Tag } from 'lucide-react';
 import { campaigns, audiences as allAudiences } from '../data/mockData';
 import { useAuth } from '../context/AuthContext';
+import PageHelp from '../components/PageHelp';
 
 const statusConfig = {
     active: { label: 'Aktiv', badge: 'badge-success' },
@@ -49,6 +50,14 @@ export default function CampaignsPage() {
                     <p className="page-subtitle">{campaigns.length} Kampagnen insgesamt · {campaigns.filter(c => c.status === 'active').length} aktiv</p>
                 </div>
                 <div className="page-header-actions">
+                    <PageHelp title="Kampagnen-Management">
+                        <p style={{ marginBottom: '12px' }}>Die Kommandozentrale für all deine großen Initiativen. Alles ordnet sich bestimmten Kampagnen unter.</p>
+                        <ul className="help-list">
+                            <li><strong>Dashboard-Sicht:</strong> Sehe sofort den Fortschritt und die Budget-Auslastung laufender Kampagnen in Kachelansicht.</li>
+                            <li><strong>Neue Kampagnen erstellen:</strong> Vergib Budgets, eine Laufzeit (Start/Ende), Keywords und setze verbindlich Zielgruppen, die du zuvor mit dem Team erarbeitet hast.</li>
+                            <li><strong>Deep-Dive:</strong> Mit einem Klick auf "Details" oder die Kachel gelangst du ins Herz (die Detailseite) der Kampagne. Dort planst du den Content, Creatives und checkst die Performance tiefergehend.</li>
+                        </ul>
+                    </PageHelp>
                     {can('canCreateCampaigns') && (
                         <button className="btn btn-primary" onClick={() => setShowNewCampaignModal(true)}>
                             <Plus size={16} />

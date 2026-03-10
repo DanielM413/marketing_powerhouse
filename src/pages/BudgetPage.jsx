@@ -5,6 +5,7 @@ import {
 } from 'recharts';
 import { budgetData } from '../data/mockData';
 import { useAuth } from '../context/AuthContext';
+import PageHelp from '../components/PageHelp';
 
 const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
@@ -70,6 +71,14 @@ export default function BudgetPage() {
                     <p className="page-subtitle">Gesamtübersicht Q1/Q2 2026</p>
                 </div>
                 <div className="page-header-actions">
+                    <PageHelp title="Budget & Controlling">
+                        <p style={{ marginBottom: '12px' }}>Behalte die volle Kontrolle über deine Investitionen. Dieses Modul ist das Haupt-Controlling-Instrumentarium.</p>
+                        <ul className="help-list">
+                            <li><strong>Entwicklungs-Charts:</strong> Sieh genau, wann du wie viel Budget eingesetzt hast und welche Kategorien (Ads, TV, Print) den größten Share haben.</li>
+                            <li><strong>Ausgaben erfassen:</strong> Sollten nicht alle Plattformen per API-Schnittstelle angebunden sein, kannst du Rechnungen und laufende Abos (wie dein SEM-Budget) manuell verbuchen, um das Controlling 100% sauber zu halten.</li>
+                            <li><strong>Berechtigung:</strong> Nur berechtige Rollen (Manager/Admins) können diese Seite einsehen, normale Mitarbeiter haben keine Einsicht in diese Datenstrukturen.</li>
+                        </ul>
+                    </PageHelp>
                     <button className="btn btn-secondary">Export</button>
                     {can('canEditBudget') && (
                         <button className="btn btn-primary">
