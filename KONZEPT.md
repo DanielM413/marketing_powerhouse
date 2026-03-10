@@ -1,8 +1,8 @@
 # 🚀 Marketing Powerhouse — Konzept & Umsetzungsstand
 
 > **Letzte Aktualisierung:** 10.03.2026
-> **Version:** 0.6.0 — Content-System & bidirektionale Verknüpfung
-> **Status:** Phase 0.5 — UI-Verfeinerung & Workflows (Content-Rundschluss)
+> **Version:** 0.6.1 — Kanäle & Touchpoints Navigations-Integration
+> **Status:** Phase 0.5 — UI-Verfeinerung & Workflows (Navigation-Optimierung)
 
 ---
 
@@ -47,8 +47,13 @@ Marketing_powerhouse/
     │   └── mockData.js               ← Testnutzer, Positionierung, Kampagnen, ...
     ├── components/
     │   ├── Layout.jsx
-    │   ├── Sidebar.jsx               ← Rollen-sensitiv, neue Sektionen
-    │   └── Header.jsx                ← Rollen-Badge, Nutzeranzeige
+    │   ├── Sidebar.jsx               ← Rollen-sensitiv, Navigation mit Kanäle & Touchpoints
+    │   ├── Header.jsx                ← Rollen-Badge, Nutzeranzeige
+    │   ├── AudienceDetailModal.jsx
+    │   ├── ContentDetailModal.jsx
+    │   ├── NewContentModal.jsx
+    │   ├── TaskDetailModal.jsx
+    │   └── PageHelp.jsx
     └── pages/
         ├── LoginPage.jsx             ← Echter Login + Dev-Panel (Schnellzugang)
         ├── DashboardPage.jsx
@@ -56,9 +61,13 @@ Marketing_powerhouse/
         ├── CampaignDetailPage.jsx    ← Master-Prompt, Personas, Keywords
         ├── AudiencesPage.jsx         ← Zielgruppen & Avatare
         ├── ContentCalendarPage.jsx
+        ├── ContentOverviewPage.jsx   ← Content-Übersicht mit KPIs
         ├── BudgetPage.jsx            ← Zugangssperre für Members
         ├── TasksPage.jsx
-        ├── PositioningPage.jsx       ← 🆕 Digitale Positionierung
+        ├── CustomerJourneyPage.jsx   ← ASIDAS-Funnel mit Touchpoint-Navigation
+        ├── TouchpointsPage.jsx       ← 🆕 Kanäle & Touchpoints (in Navigation)
+        ├── PositioningPage.jsx       ← Digitale Positionierung
+        ├── ManualPage.jsx            ← Rollenspezifische Anleitung
         └── SettingsPage.jsx          ← Admin-Tab (Benutzerverwaltung)
 ```
 
@@ -113,30 +122,30 @@ const { can, isRole, currentUser } = useAuth();
 
 ### Test-Accounts
 
-| Rolle | Name | E-Mail | Passwort | Abteilung |
-|---|---|---|---|---|
-| 🔴 **Admin** | Alexander König | `admin@marketing-ph.de` | `admin123` | IT & Operations |
-| 🟣 **Manager** | Sarah Müller | `sarah@marketing-ph.de` | `manager123` | Marketing |
-| 🟣 **Manager** | Max Weber | `max@marketing-ph.de` | `manager123` | Marketing |
-| 🟢 **Member** | Lisa Chen | `lisa@marketing-ph.de` | `member123` | Marketing (Content) |
-| 🟢 **Member** | Tom Schmidt | `tom@marketing-ph.de` | `member123` | Performance Marketing |
-| 🟢 **Member** | Julia Bauer | `julia@marketing-ph.de` | `member123` | Marketing (Social) |
+| Rolle | Name | E-Mail | Passwort | Abteilung | Status |
+|---|---|---|---|---|---|
+| 🔴 **Admin** | Daniel Moretz | `daniel@test-it-academy.de` | `admin123` | Geschäftsführung & Training | online |
+| 🟣 **Manager** | Waleri Moretz | `waleri@test-it-academy.de` | `manager123` | Training & Qualität | online |
+| 🟣 **Manager** | Anna Schmidt | `anna@test-it-academy.de` | `manager123` | Marketing | online |
+| 🟢 **Member** | Lisa Bauer | `lisa@test-it-academy.de` | `member123` | Marketing | away |
+| 🟢 **Member** | Tom Weber | `tom@test-it-academy.de` | `member123` | Performance Marketing | offline |
+| 🟢 **Member** | Jana Klein | `jana@test-it-academy.de` | `member123` | Kundenservice | online |
 
 ### Was jede Rolle sieht
 
-**Als Admin (`admin@marketing-ph.de`)**
+**Als Admin (`daniel@test-it-academy.de`)**
 - Vollständige Navigation inkl. Budget & Einstellungen
 - In Einstellungen: Tab "Benutzerverwaltung" mit Rollenzuweisung
 - Digitale Positionierung: **editierbar** (alle 5 Blöcke)
 - "Neue Kampagne"-Button: sichtbar
 
-**Als Manager (`sarah@marketing-ph.de`)**
+**Als Manager (`waleri@test-it-academy.de` oder `anna@test-it-academy.de`)**
 - Vollständige Navigation inkl. Budget
 - In Einstellungen: kein Benutzerverwaltungs-Tab, Felder read-only
 - Digitale Positionierung: read-only
 - "Neue Kampagne"-Button: sichtbar
 
-**Als Member (`lisa@marketing-ph.de`)**
+**Als Member (`lisa@test-it-academy.de`, `tom@test-it-academy.de` oder `jana@test-it-academy.de`)**
 - Navigation: **Budget ausgeblendet**
 - Budget-Seite: "Kein Zugriff"-Sperrseite
 - Einstellungen: alle Felder deaktiviert, kein Admin-Tab
@@ -190,11 +199,13 @@ const { can, isRole, currentUser } = useAuth();
 - [x] **Vertriebs-Handoff**: Visueller Trigger für den Übergang von Marketing zu Sales in der Action-Phase.
 - [x] **KPIs & Metriken**: Trends und Kennzahlen pro Stage zur Erfolgsmessung der Journey.
 
-### 🆕 ✅ Kanäle & Touchpoints (`/touchpoints`)
-- [x] **Single-Source-of-Truth**: Alle eingesetzten Kanäle zentral angelegt (Google Ads, LinkedIn, E-Mail CRM, etc.).
-- [x] **Bidirektionale Analyse**: Einblick, welche Kampagnen UND welcher Content gerade auf diesem Kanal ausgespielt werden.
-- [x] **Navigation State**: Unterstützung von Deep-Links aus anderen Modulen (Journeys/Kampagnen).
-- [x] **Navigation**: Direkte Verlinkung zurück zur Kampagnen-Detailseite.
+### ✅ Kanäle & Touchpoints (`/touchpoints`)
+- [x] **In Navigation sichtbar**: Eigener Menüpunkt im berereich "Marketing" mit Badge (6 Kanäle)
+- [x] **Single-Source-of-Truth**: Alle eingesetzten Kanäle zentral angelegt (Google Ads, LinkedIn, E-Mail CRM, Webinar-LP, Sales Pipeline, Instagram Reels)
+- [x] **Bidirektionale Analyse**: Einblick, welche Kampagnen UND welcher Content gerade auf diesem Kanal ausgespielt werden
+- [x] **Navigation State**: Unterstützung von Deep-Links aus anderen Modulen (Journeys/Kampagnen)
+- [x] **Navigation**: Direkte Verlinkung zurück zur Kampagnen-Detailseite
+- [x] **Suche & Filter**: Nach Touchpoint-Name/Description und Typ (Paid, Owned, Earned, Direct)
 
 ### 🆕 ✅ Digitale Positionierung (`/positioning`)
 - [x] **Block 1: Unternehmens-DNA** (Name, Tagline, Gründung, Branche, Standort, ...)

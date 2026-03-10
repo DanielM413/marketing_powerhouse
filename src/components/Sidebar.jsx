@@ -2,7 +2,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import {
     LayoutDashboard, Megaphone, Calendar, Wallet,
     CheckSquare, Settings, LogOut, Users2, BarChart3,
-    Building2, Target, Tag, ShieldAlert, FileText, HelpCircle, Map
+    Building2, Target, Tag, ShieldAlert, FileText, HelpCircle, Map, Radio
 } from 'lucide-react';
 import { useAuth, ROLE_CONFIG } from '../context/AuthContext';
 
@@ -21,6 +21,7 @@ const NAV = [
             { path: '/campaigns', icon: Megaphone, label: 'Kampagnen', badge: '4', requiredPermission: null },
             { path: '/audiences', icon: Users2, label: 'Zielgruppen', badge: '3' },
             { path: '/journeys', icon: Map, label: 'Customer Journey', badge: '1' },
+            { path: '/touchpoints', icon: Radio, label: 'Kanäle & Touchpoints', badge: '6' },
             { path: '/content-overview', icon: FileText, label: 'Content-Übersicht' },
             { path: '/content', icon: Calendar, label: 'Content-Kalender' },
             { path: '/budget', icon: Wallet, label: 'Budget & Controlling', requiredPermission: 'canSeeBudget' },
