@@ -22,6 +22,7 @@ import {
 } from 'recharts';
 import { campaigns, activityFeed, dashboardChartData, channelPerformance, budgetData } from '../data/mockData';
 import { useNavigate } from 'react-router-dom';
+import PageHelp from '../components/PageHelp';
 
 const stats = [
     { label: 'Impressionen', value: '1.38M', change: '+12.5%', positive: true, icon: Eye, color: 'primary' },
@@ -67,6 +68,16 @@ export default function DashboardPage() {
                     <p className="page-subtitle">Dein Marketing auf einen Blick — Stand: 10. März 2026</p>
                 </div>
                 <div className="page-header-actions">
+                    <PageHelp title="Das Dashboard">
+                        <p style={{ marginBottom: '12px' }}>Willkommen im Kontrollzentrum! Das Dashboard biete dir einen globalen Überblick über alle Marketingaktivitäten.</p>
+                        <ul className="help-list">
+                            <li><strong>Top-Metriken (KPIs):</strong> Zeigen Impressionen, Klicks, Conversions und Ausgaben über alle Kampagnen hinweg im Vergleich zum Vormonat.</li>
+                            <li><strong>Performance-Trend:</strong> Die interaktive Kurve (Area Chart) visualisiert die Entwicklung von Klicks und Impressionen über die letzen Wochen.</li>
+                            <li><strong>Kanal-Performance:</strong> Hier siehst du, welche Kanäle (Google, Meta, TikTok) am besten abschneiden (Tortendiagramm).</li>
+                            <li><strong>Aktive Kampagnen & Feed:</strong> Schneller Zugriff auf laufende Projekte und eine Timeline der letzten Aktivitäten deiner Teamkollegen.</li>
+                            <li><strong>Budget Checkout:</strong> Ein Kurzüberblick über die Kosten der verschiedenen Positionen. Den vollen Einblick gibt es unter dem Sidebar-Menü "Budget & Controlling".</li>
+                        </ul>
+                    </PageHelp>
                     <button className="btn btn-secondary">Report erstellen</button>
                     <button className="btn btn-primary" onClick={() => navigate('/campaigns')}>
                         <Megaphone size={16} />

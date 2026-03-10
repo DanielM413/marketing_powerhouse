@@ -1,177 +1,165 @@
 import { useState } from 'react';
-import { Plus, Filter, Calendar, User } from 'lucide-react';
-import { tasks } from '../data/mockData';
+import { Plus, Calendar, CheckSquare, Clock, ArrowRight, User, ExternalLink, Globe, LayoutList, GripVertical } from 'lucide-react';
+import { useTasks } from '../context/TaskContext';
+import { campaigns } from '../data/mockData';
+import TaskDetailModal from '../components/TaskDetailModal';
 
-const columns = [
-    { id: 'todo', title: 'Offen', dotColor: 'var(--text-tertiary)' },
-    { id: 'in-progress', title: 'In Arbeit', dotColor: 'var(--color-info)' },
-    { id: 'in-review', title: 'In Review', dotColor: 'var(--color-warning)' },
-    { id: 'done', title: 'Erledigt', dotColor: 'var(--color-success)' },
+// We map our 10-step creative status model to 5 Kanban lanes for the overview
+const STATUS_GROUPS = [
+    { id: 'todo', title: 'Offen / KI-Phase', statuses: ['draft', 'ai_generating', 'ai_ready'], color: 'var(--text-tertiary)' },
+    { id: 'review', title: 'In Review', statuses: ['review', 'revision'], color: 'var(--color-warning)' },
+    { id: 'approved', title: 'Freigegeben', statuses: ['approved'], color: 'var(--color-info)' },
+    { id: 'scheduled', title: 'Eingeplant', statuses: ['scheduled'], color: 'var(--color-primary)' },
+    { id: 'done', title: 'Live / Erledigt', statuses: ['posted', 'monitoring', 'analyzed'], color: 'var(--color-success)' },
 ];
 
-const priorityConfig = {
-    high: { label: 'Hoch', badge: 'badge-danger' },
-    medium: { label: 'Mittel', badge: 'badge-warning' },
-    low: { label: 'Niedrig', badge: 'badge-info' },
+const UI_STATE_LABELS = {
+    draft: 'Entwurf', ai_generating: 'KI generiert…', ai_ready: 'KI-Vorschlag', review: 'Im Review', revision: 'Überarbeitung',
+    approved: 'Freigegeben', scheduled: 'Eingeplant', posted: 'Gepostet', monitoring: 'Beobachtung', analyzed: 'Analysiert'
 };
 
 export default function TasksPage() {
+    const { tasks } = useTasks();
     const [view, setView] = useState('kanban');
 
-    const getTasksByStatus = (status) => tasks.filter(t => t.status === status);
+    // Modal state for Task Details
+    const [selectedTask, setSelectedTask] = useState(null);
+
+    const getGroupTasks = (groupId) => {
+        const group = STATUS_GROUPS.find(g => g.id === groupId);
+        return tasks.filter(t => group.statuses.includes(t.status));
+    };
+
+    const getCampaignName = (campaignId) => {
+        if (!campaignId) return 'Allgemein';
+        return campaigns.find(c => c.id === campaignId)?.name || 'Unbekannte Kampagne';
+    };
+
+    // Card Renderer for Kanban
+    const TaskCard = ({ task }) => (
+        <div className="kanban-card" onClick={() => setSelectedTask(task)} style={{ cursor: 'pointer', transition: 'box-shadow 0.2s' }} onMouseEnter={e => e.currentTarget.style.boxShadow = 'var(--shadow-md)'} onMouseLeave={e => e.currentTarget.style.boxShadow = 'var(--shadow-sm)'}>
+            <div className="kanban-card-title">{task.title}</div>
+
+            <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap', marginBottom: '8px' }}>
+                <span className="badge" style={{ background: 'var(--bg-hover)', color: 'var(--text-secondary)' }}>
+                    {UI_STATE_LABELS[task.status] || task.status}
+                </span>
+                {task.platform && (
+                    <span className="badge badge-info" style={{ background: 'rgba(6, 182, 212, 0.1)', color: '#06b6d4' }}>
+                        {task.platform}
+                    </span>
+                )}
+            </div>
+
+            <div style={{ fontSize: '0.65rem', color: 'var(--color-primary)', background: 'var(--color-primary-50)', padding: '2px 8px', borderRadius: 'var(--radius-full)', display: 'inline-block', marginBottom: '8px' }}>
+                {getCampaignName(task.campaignId)}
+            </div>
+
+            <div className="kanban-card-meta">
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <div style={{ width: 20, height: 20, borderRadius: 'var(--radius-full)', background: 'linear-gradient(135deg, var(--color-primary), var(--color-accent))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.5rem', color: 'white', fontWeight: 600 }}>
+                        {task.assignee ? task.assignee.split(' ').map(n => n[0]).join('') : '?'}
+                    </div>
+                    <span>{task.assignee?.split(' ')[0] || 'Unzugewiesen'}</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '3px', color: new Date(task.dueDate) < new Date() ? 'var(--color-danger)' : 'inherit' }}>
+                        <Calendar size={10} />
+                        {task.dueDate ? new Date(task.dueDate).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' }) : 'Kein Datum'}
+                    </span>
+                </div>
+            </div>
+        </div>
+    );
 
     return (
         <div className="animate-in">
             <div className="page-header">
                 <div className="page-header-left">
-                    <h1 className="page-title">Aufgaben</h1>
-                    <p className="page-subtitle">{tasks.length} Aufgaben · {tasks.filter(t => t.status === 'done').length} erledigt</p>
+                    <h1 className="page-title">Globale Aufgaben & Creatives</h1>
+                    <p className="page-subtitle">Alle Kampagnen-Creatives und anstehenden Tasks im Überblick ({tasks.length})</p>
                 </div>
                 <div className="page-header-actions">
                     <div style={{ display: 'flex', gap: '4px', background: 'var(--bg-elevated)', borderRadius: 'var(--radius-sm)', padding: '2px' }}>
-                        <button
-                            className={`btn btn-sm ${view === 'kanban' ? 'btn-primary' : 'btn-ghost'}`}
-                            onClick={() => setView('kanban')}
-                        >Kanban</button>
-                        <button
-                            className={`btn btn-sm ${view === 'list' ? 'btn-primary' : 'btn-ghost'}`}
-                            onClick={() => setView('list')}
-                        >Liste</button>
+                        <button className={`btn btn-sm ${view === 'kanban' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setView('kanban')}><GripVertical size={14} /> Kanban</button>
+                        <button className={`btn btn-sm ${view === 'list' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setView('list')}><LayoutList size={14} /> Liste</button>
                     </div>
-                    <button className="btn btn-primary">
+                    <button className="btn btn-primary" onClick={() => alert('Wird demnächst auf das globale Modal umgestellt.')}>
                         <Plus size={16} /> Neue Aufgabe
                     </button>
                 </div>
             </div>
 
-            {/* Kanban View */}
+            {/* KANBAN VIEW */}
             {view === 'kanban' && (
                 <div className="kanban-board">
-                    {columns.map(col => {
-                        const colTasks = getTasksByStatus(col.id);
+                    {STATUS_GROUPS.map(group => {
+                        const groupTasks = getGroupTasks(group.id);
                         return (
-                            <div key={col.id} className="kanban-column">
+                            <div key={group.id} className="kanban-column" style={{ background: 'var(--bg-elevated)' }}>
                                 <div className="kanban-column-header">
                                     <div className="kanban-column-title">
-                                        <div style={{ width: 8, height: 8, borderRadius: '50%', background: col.dotColor }} />
-                                        {col.title}
+                                        <div style={{ width: 8, height: 8, borderRadius: '50%', background: group.color }} />
+                                        {group.title}
                                     </div>
-                                    <span className="kanban-column-count">{colTasks.length}</span>
+                                    <span className="kanban-column-count">{groupTasks.length}</span>
                                 </div>
-                                {colTasks.map(task => {
-                                    const priority = priorityConfig[task.priority];
-                                    return (
-                                        <div key={task.id} className="kanban-card">
-                                            <div className="kanban-card-title">{task.title}</div>
-                                            {task.campaign && (
-                                                <div style={{
-                                                    fontSize: '0.6875rem',
-                                                    color: 'var(--color-primary-light)',
-                                                    background: 'var(--color-primary-50)',
-                                                    padding: '2px 8px',
-                                                    borderRadius: 'var(--radius-full)',
-                                                    display: 'inline-block',
-                                                    marginBottom: '8px',
-                                                }}>
-                                                    {task.campaign}
-                                                </div>
-                                            )}
-                                            <div className="kanban-card-meta">
-                                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                                    <div style={{
-                                                        width: 22,
-                                                        height: 22,
-                                                        borderRadius: 'var(--radius-full)',
-                                                        background: 'linear-gradient(135deg, var(--color-primary), var(--color-accent))',
-                                                        display: 'flex',
-                                                        alignItems: 'center',
-                                                        justifyContent: 'center',
-                                                        fontSize: '0.5625rem',
-                                                        color: 'white',
-                                                        fontWeight: 600,
-                                                    }}>
-                                                        {task.assignee.split(' ').map(n => n[0]).join('')}
-                                                    </div>
-                                                    <span>{task.assignee.split(' ')[0]}</span>
-                                                </div>
-                                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                                    <span className={`badge ${priority.badge}`} style={{ fontSize: '0.625rem' }}>
-                                                        {priority.label}
-                                                    </span>
-                                                    <span style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
-                                                        <Calendar size={10} />
-                                                        {new Date(task.dueDate).toLocaleDateString('de-DE', { day: '2-digit', month: 'short' })}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    );
-                                })}
-                                <button className="btn btn-ghost btn-sm w-full" style={{ marginTop: '8px', justifyContent: 'center' }}>
-                                    <Plus size={14} /> Aufgabe hinzufügen
-                                </button>
+                                {groupTasks.map(task => <TaskCard key={task.id} task={task} />)}
                             </div>
                         );
                     })}
                 </div>
             )}
 
-            {/* List View */}
+            {/* LIST VIEW */}
             {view === 'list' && (
-                <div className="card">
+                <div className="card" style={{ padding: 0 }}>
                     <div className="table-container">
                         <table className="table">
                             <thead>
                                 <tr>
-                                    <th>Aufgabe</th>
-                                    <th>Status</th>
-                                    <th>Priorität</th>
-                                    <th>Zugewiesen</th>
+                                    <th>Titel</th>
+                                    <th>Status (Detail)</th>
                                     <th>Kampagne</th>
-                                    <th>Fällig</th>
+                                    <th>Bearbeiter</th>
+                                    <th>Plattform</th>
+                                    <th>Fällig am</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {tasks.map(task => {
-                                    const priority = priorityConfig[task.priority];
-                                    const statusLabel = columns.find(c => c.id === task.status)?.title || task.status;
-                                    return (
-                                        <tr key={task.id}>
-                                            <td style={{ fontWeight: 500 }}>{task.title}</td>
-                                            <td>
-                                                <span className={`badge ${task.status === 'done' ? 'badge-success' : task.status === 'in-progress' ? 'badge-info' : task.status === 'in-review' ? 'badge-warning' : 'badge-primary'}`}>
-                                                    {statusLabel}
-                                                </span>
-                                            </td>
-                                            <td><span className={`badge ${priority.badge}`}>{priority.label}</span></td>
-                                            <td>
-                                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                                    <div style={{
-                                                        width: 24,
-                                                        height: 24,
-                                                        borderRadius: 'var(--radius-full)',
-                                                        background: 'linear-gradient(135deg, var(--color-primary), var(--color-accent))',
-                                                        display: 'flex',
-                                                        alignItems: 'center',
-                                                        justifyContent: 'center',
-                                                        fontSize: '0.5625rem',
-                                                        color: 'white',
-                                                        fontWeight: 600,
-                                                    }}>
-                                                        {task.assignee.split(' ').map(n => n[0]).join('')}
-                                                    </div>
-                                                    {task.assignee}
-                                                </div>
-                                            </td>
-                                            <td style={{ color: 'var(--text-secondary)' }}>{task.campaign || '–'}</td>
-                                            <td>{new Date(task.dueDate).toLocaleDateString('de-DE', { day: '2-digit', month: 'short', year: 'numeric' })}</td>
-                                        </tr>
-                                    );
-                                })}
+                                {tasks.map(task => (
+                                    <tr key={task.id} onClick={() => setSelectedTask(task)} style={{ cursor: 'pointer' }}>
+                                        <td style={{ fontWeight: 600 }}>{task.title}</td>
+                                        <td>
+                                            <span className="badge" style={{ background: 'var(--bg-elevated)' }}>
+                                                {UI_STATE_LABELS[task.status] || task.status}
+                                            </span>
+                                        </td>
+                                        <td style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>{getCampaignName(task.campaignId)}</td>
+                                        <td>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: 'var(--font-size-xs)' }}>
+                                                <div style={{ width: 20, height: 20, borderRadius: 'var(--radius-full)', background: 'linear-gradient(135deg, var(--color-primary), var(--color-accent))', color: 'white', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '0.5rem', fontWeight: 600 }}>{task.assignee?.charAt(0) || '?'}</div>
+                                                {task.assignee || '–'}
+                                            </div>
+                                        </td>
+                                        <td><span className="badge badge-info">{task.platform || 'Alle'}</span></td>
+                                        <td style={{ fontSize: 'var(--font-size-xs)' }}>
+                                            {task.dueDate ? new Date(task.dueDate).toLocaleDateString('de-DE') : '–'}
+                                        </td>
+                                    </tr>
+                                ))}
                             </tbody>
                         </table>
                     </div>
                 </div>
+            )}
+
+            {/* DETAIL MODAL (Slide-in oder Pop-up) */}
+            {selectedTask && (
+                <TaskDetailModal
+                    task={selectedTask}
+                    onClose={() => setSelectedTask(null)}
+                />
             )}
         </div>
     );

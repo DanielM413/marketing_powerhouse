@@ -11,6 +11,8 @@ import TasksPage from './pages/TasksPage';
 import SettingsPage from './pages/SettingsPage';
 import AudiencesPage from './pages/AudiencesPage';
 import PositioningPage from './pages/PositioningPage';
+import ContentOverviewPage from './pages/ContentOverviewPage';
+import ManualPage from './pages/ManualPage';
 
 function AppRoutes() {
   const { currentUser, login, logout, can } = useAuth();
@@ -28,10 +30,12 @@ function AppRoutes() {
           <Route path="/campaigns/:id" element={<CampaignDetailPage />} />
           <Route path="/audiences" element={<AudiencesPage />} />
           <Route path="/content" element={<ContentCalendarPage />} />
+          <Route path="/content-overview" element={<ContentOverviewPage />} />
           <Route path="/budget" element={<BudgetPage />} />
           <Route path="/tasks" element={<TasksPage />} />
           <Route path="/positioning" element={<PositioningPage />} />
           <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/manual" element={<ManualPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Layout>
@@ -39,10 +43,17 @@ function AppRoutes() {
   );
 }
 
+import { TaskProvider } from './context/TaskContext';
+import { ContentProvider } from './context/ContentContext';
+
 function App() {
   return (
     <AuthProvider>
-      <AppRoutes />
+      <ContentProvider>
+        <TaskProvider>
+          <AppRoutes />
+        </TaskProvider>
+      </ContentProvider>
     </AuthProvider>
   );
 }

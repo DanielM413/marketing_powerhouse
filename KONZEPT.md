@@ -1,8 +1,8 @@
 # 🚀 Marketing Powerhouse — Konzept & Umsetzungsstand
 
-> **Letzte Aktualisierung:** 10.03.2026  
-> **Version:** 0.3.0 — RBAC, Digitale Positionierung & Unternehmensebene  
-> **Status:** Phase 0 — UI-Skeleton vollständig (Rollen & Positionierung)
+> **Letzte Aktualisierung:** 10.03.2026
+> **Version:** 0.6.0 — Content-System & bidirektionale Verknüpfung
+> **Status:** Phase 0.5 — UI-Verfeinerung & Workflows (Content-Rundschluss)
 
 ---
 
@@ -19,7 +19,7 @@ Eine **SaaS-Plattform zur Unterstützung und Automatisierung von Marketingprozes
 | **Frontend** | React + Vite | ✅ Aktiv |
 | **Styling** | Vanilla CSS (Design System) | ✅ Aktiv |
 | **Routing** | React Router v7 | ✅ Aktiv |
-| **State / Auth** | React Context (AuthContext) | ✅ Aktiv |
+| **State / Auth** | React Context (AuthContext, TaskContext, ContentContext) | ✅ Aktiv |
 | **Charts** | Recharts | ✅ Aktiv |
 | **Icons** | Lucide React | ✅ Aktiv |
 | **Typografie** | Google Fonts (Inter) | ✅ Aktiv |
@@ -165,13 +165,16 @@ const { can, isRole, currentUser } = useAuth();
 - [x] Budget-Schnellübersicht
 - [ ] Echte Datenquellen / Zeitraum-Filter
 
-### ✅ Kampagnen-Management
+### ✅ Kampagnen-Management & Creative-Workflow
 - [x] Kampagnen-Karten mit Status, Fortschritt, Budget
 - [x] Quick-Badges (Master-Prompt, Personas, Keywords)
 - [x] **"Neue Kampagne"-Button** nur für Admin & Manager sichtbar
 - [x] 3-Schritt-Modal: Grunddaten / Master-Prompt + Zielgruppen / Keywords
-- [x] Kampagnen-Detailseite mit Master-Prompt, Personas, Keywords
-- [ ] Kampagne bearbeiten/löschen
+- [x] **Detailseite (3 Tabs)**: Übersicht, Creatives & Aufgaben, Performance
+- [x] **Creative-Workflow (10 Stufen)**: Entwurf → KI-Generierung → KI-Vorschlag → Review → Überarbeitung → Freigabe → Einplanung → Posting → Beobachtung → KI-Analyse
+- [x] Aufgaben nach Scope (Übergreifend vs. kanalspezifisch)
+- [x] Modal für neues Creative (Typen: Post, Reel, Ad, Mail)
+- [ ] Kampagne bearbeiten/löschen (Grunddaten)
 
 ### ✅ Zielgruppen & Avatare
 - [x] Persona-Karten mit Avatar, Filter (B2B/B2C), Suche
@@ -189,10 +192,22 @@ const { can, isRole, currentUser } = useAuth();
 - [x] **Admin**: inline-editierbar, Speichern-Button
 - [x] **Manager & Member**: vollständig read-only
 
-### ✅ Content-Kalender
-- [x] Monatsansicht, Events farbcodiert
-- [x] Monat-Navigation, Listen-Ansicht
-- [ ] Drag & Drop, Wochenansicht, Content erstellen
+### ✅ Content-System (NEU in v0.6)
+- [x] **Eigener Datentyp `Content`** mit 6-stufigem Statusmodell:
+  - Idee → Planung → Produktion → Bereit → Eingeplant → Veröffentlicht
+- [x] **Content-Kalender** (`/content`): Monatsansicht, Listenansicht, farbcodiert nach Typ
+- [x] **Content-Übersicht** (`/content-overview`): Globale Karten-Übersicht mit Filtern (Status, Aufgaben-Status)
+- [x] **Bidirektionale Verknüpfung Content ↔ Aufgaben**:
+  - Content zeigt verlinkte Aufgaben im Detail-Modal
+  - Aufgaben-Detail-Modal zeigt zugehörigen Content („Zugehöriger Content“-Sektion)
+- [x] **Rotes Flag**: Content ohne Aufgaben erscheint rot im Kalender + Warnbanner
+- [x] **Aufgabenhüllen-Erstellung**: Beim Erstellen von Content kann direkt eine Entwurfs-Aufgabe generiert werden
+- [x] **ContentContext**: Globaler State für Content-Management (`addContent`, `updateContent`, `deleteContent`)
+- [x] **Detail-Modal (zentral)**: Reusable Modal (`ContentDetailModal`) zur Bearbeitung (Titel, Status, Datum, Plattform, uvm.)
+- [x] **Inline Aufgaben-Erstellung**: Direkt aus der Content-Ansicht können neue Aufgaben für den Content angelegt werden.
+- [x] KPI-Stats in der Content-Übersicht (Gesamt, Eingeplant, Veröffentlicht, Ohne Aufgaben)
+- [x] **Kampagnen-Integration**: Neuer Reiter "Content" in der Kampagnen-Ansicht, der den referenzierten Content anzeigt und die direkte Erstellung ermöglicht.
+- [ ] Drag & Drop im Kalender
 
 ### ✅ Budget & Controlling
 - [x] KPIs, Plan vs. Ist Chart, Kategorie-Pie, Detail-Tabelle
@@ -200,9 +215,19 @@ const { can, isRole, currentUser } = useAuth();
 - [x] **Manager/Admin**: "Ausgabe erfassen"-Button
 - [ ] Echte Eingaben, Budget-Forecast
 
-### ✅ Aufgaben-Management
-- [x] Kanban-Board, Listen-Ansicht, Prioritäts-Badges
-- [ ] Drag & Drop, Erstellen & Bearbeiten
+### ✅ Aufgaben-Management & Creatives (Unified Model)
+- [x] Einheitlicher `TaskContext` für übergreifende Datenhaltung
+- [x] Globale Aufgabenübersicht (`/tasks`) mit 5 Kanban-Spalten & Listenansicht
+- [x] **Detail-Modal (zentral)**: Bearbeitbar je nach Berechtigung (Admin/Manager/Bearbeiter)
+- [x] Verknüpfung von Aufgaben zu Kampagnen mit direktem Navigations-Link
+- [x] **Verknüpfung zu Content**: Aufgaben-Modal zeigt zugehörigen Content mit Status
+- [x] Integration von OneDrive/Ablage-Links
+- [ ] Drag & Drop zwischen Kanban-Spalten
+
+### ✅ System / Anleitung
+- [x] **Handbuch & Workflow** (`/manual`): Rollenspezifische Anleitung für Admin, Manager und Member
+- [x] Interaktive Reiter pro Rolle (Strategie, Planung, Umsetzung)
+- [x] Visuelle Platzhalter-Illustartionen für Screenshots
 
 ### ✅ Einstellungen
 - [x] Allgemein, Team-Übersicht, Integrationen, Benachrichtigungen
@@ -255,6 +280,21 @@ const { can, isRole, currentUser } = useAuth();
 { id, name, status, startDate, endDate, budget, spent, channels,
   description, masterPrompt, targetAudiences[], campaignKeywords[],
   kpis, owner, progress }
+```
+
+### Content (`initialContents`)
+```
+{ id, title, description, status ('idea'|'planning'|'production'|'ready'|'scheduled'|'published'),
+  publishDate, platform, campaignId, taskIds[],
+  author, contentType ('social'|'email'|'ads'|'content'|'event'), createdAt }
+```
+
+### Aufgaben / Creatives (`initialTasks`)
+```
+{ id, title, status (10-stufiger Workflow), assignee, author,
+  dueDate, publishDate, platform, type, oneDriveLink,
+  description, campaignId, scope ('single'|'all'),
+  performance, aiSuggestion, analysisResult }
 ```
 
 ---

@@ -2,7 +2,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import {
     LayoutDashboard, Megaphone, Calendar, Wallet,
     CheckSquare, Settings, LogOut, Users2, BarChart3,
-    Building2, Target, Tag, ShieldAlert,
+    Building2, Target, Tag, ShieldAlert, FileText, HelpCircle
 } from 'lucide-react';
 import { useAuth, ROLE_CONFIG } from '../context/AuthContext';
 
@@ -18,8 +18,9 @@ const NAV = [
     {
         section: 'Marketing',
         items: [
-            { path: '/campaigns', icon: Megaphone, label: 'Kampagnen', badge: '6', requiredPermission: null },
-            { path: '/audiences', icon: Users2, label: 'Zielgruppen', badge: '4' },
+            { path: '/campaigns', icon: Megaphone, label: 'Kampagnen', badge: '4', requiredPermission: null },
+            { path: '/audiences', icon: Users2, label: 'Zielgruppen', badge: '3' },
+            { path: '/content-overview', icon: FileText, label: 'Content-Übersicht' },
             { path: '/content', icon: Calendar, label: 'Content-Kalender' },
             { path: '/budget', icon: Wallet, label: 'Budget & Controlling', requiredPermission: 'canSeeBudget' },
         ],
@@ -40,6 +41,7 @@ const NAV = [
     {
         section: 'System',
         items: [
+            { path: '/manual', icon: HelpCircle, label: 'Anleitung' },
             { path: '/settings', icon: Settings, label: 'Einstellungen', requiredPermission: 'canManageSettings' },
         ],
     },
