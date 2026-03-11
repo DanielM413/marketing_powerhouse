@@ -190,8 +190,7 @@ export default function ManualPage() {
     ];
 
     const managerSections = [
-        'Zielgruppen (Personas) anlegen',
-        'Customer Journey (ASIDAS-Modell) planen',
+        'Zielgruppen (Personas) anlegen, 5-Phasen Journey skizzieren & Kampagne erstellen',
         'Kampagnen orchestrieren',
         'Kanäle & Touchpoints verwalten',
         'Content-Kalender & Redaktionsplanung',
@@ -323,20 +322,20 @@ export default function ManualPage() {
                             </div>
                         </AccordionItem>
 
-                        <AccordionItem title="2. Customer Journey (ASIDAS-Modell) planen" icon={Map} color="#ec4899">
+                        <AccordionItem title="2. Customer Journey (5-Phasen-Modell) planen" icon={Map} color="#ec4899">
                             <div style={{ color: 'var(--text-secondary)', lineHeight: 1.7 }}>
                                 <p style={{ marginBottom: '16px' }}><strong>Navigation:</strong> `Marketing &gt; Customer Journey`</p>
-                                <p style={{ marginBottom: '16px' }}>Das ASIDAS-Funnel ist dein strategisches Tool, um die Customer Journey psychologisch abzubilden und die richtigen Inhalte zum richtigen Zeitpunkt bereitzustellen.</p>
+                                <p style={{ marginBottom: '16px' }}>Das 5-Phasen-Modell ist dein strategisches Tool, um die Customer Journey psychologisch abzubilden und die richtigen Inhalte zum richtigen Zeitpunkt bereitzustellen.</p>
                                 <ul style={{ listStyleType: 'disc', paddingLeft: '24px', marginBottom: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                     <li><strong>Zur Journey gehen:</strong> Klick auf "Marketing &gt; Customer Journey" und wähle eine Zielgruppe/Persona aus</li>
-                                    <li><strong>ASIDAS verstehen:</strong> Die Phasen sind: Attention (Aufmerksamkeit), Search (Suche), Interest (Interesse), Desire (Verlangen), Action (Handlung), Share (Weitergabe). Search und Share sind omnipräsent.</li>
+                                    <li><strong>Die 5 Phasen verstehen:</strong> Die Phasen sind: Awareness (Aufmerksamkeit), Consideration (Abwägung), Purchase (Kauf), Retention (Kundenbindung) und Advocacy (Empfehlung).</li>
                                     <li><strong>Touchpoints zuordnen:</strong> Pro Phase siehst du, welche Kanäle aktiv sind (aus "Kanäle & Touchpoints"). So erkennst du sofort: "Für die Interest-Phase haben wir noch keinen Instagram-Content."</li>
                                     <li><strong>Content verlinken:</strong> Deep-Linking zu deinem Content (aus Content-Kalender). Mit Klick öffnet sich das Modal mit detaillierten Infos.</li>
                                     <li><strong>Performance-Insights:</strong> Jede Phase zeigt KPIs und Trends, damit du sieht, wo die Journey "stockt".</li>
                                 </ul>
                                 <PlaceholderImage
-                                    title="Customer Journey ASIDAS Board" icon={Map} color="#ec4899"
-                                    description="Zeigt das ASIDAS-Funnel mit den 6 Phasen, den Touchpoints, dem verlinkten Content und Performance-Metriken pro Phase."
+                                    title="Customer Journey 5-Phasen Board" icon={Map} color="#ec4899"
+                                    description="Zeigt das Journey-Board mit den 5 Phasen, den Touchpoints, dem verlinkten Content und Performance-Metriken pro Phase."
                                 />
                             </div>
                         </AccordionItem>
@@ -539,7 +538,7 @@ export default function ManualPage() {
                             description="Komplette Vorbereitung einer Kampagne von Personas bis zur Aufgabendelegation."
                             steps={[
                                 { title: 'Personas', description: 'Zielgruppen mit Demografie, Zielen, Frustrationen anlegen' },
-                                { title: 'Journey mappen', description: 'ASIDAS-Phasen durchplanen, Touchpoints zuordnen' },
+                                { title: 'Journey mappen', description: 'Die 5 Phasen durchplanen, Touchpoints zuordnen' },
                                 { title: 'Kampagne erstellen', description: 'Kampagne mit Budget, Master-Prompt, Keywords anlegen' },
                                 { title: 'Content planen', description: '4-12 Wochen Content im Kalender eintragen (mit Aufgabenhüllen!)' },
                                 { title: 'Tasks delegieren', description: 'Detaillierte Briefs schreiben, Members assign, Deadlines setzen' },

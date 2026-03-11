@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Plus, X } from 'lucide-react';
 import { useContents } from '../context/ContentContext';
 import { useTasks } from '../context/TaskContext';
-import { campaigns } from '../data/mockData';
+import { campaigns, touchpoints } from '../data/mockData';
 
 export default function NewContentModal({ onClose, defaultCampaignId }) {
     const { addContent, updateContent } = useContents();
@@ -11,6 +11,7 @@ export default function NewContentModal({ onClose, defaultCampaignId }) {
     const [newContent, setNewContent] = useState({
         title: '', description: '', publishDate: '', platform: '',
         campaignId: defaultCampaignId || '', contentType: 'social', createTasks: false,
+        touchpointId: '', journeyPhase: 'Awareness'
     });
 
     const handleCreate = () => {
@@ -19,10 +20,12 @@ export default function NewContentModal({ onClose, defaultCampaignId }) {
         const contentId = addContent({
             title: newContent.title,
             description: newContent.description,
-            publishDate: newContent.publishDate,
-            platform: newContent.platform,
+            publishDate: newContent.publishDate || null,
+            platform: newContent.platform || null,
             campaignId: newContent.campaignId || null,
             contentType: newContent.contentType,
+            touchpointId: newContent.touchpointId || null,
+            journeyPhase: newContent.journeyPhase || 'Awareness',
             taskIds: [],
             author: 'Aktueller Nutzer',
             status: 'idea',
@@ -36,13 +39,14 @@ export default function NewContentModal({ onClose, defaultCampaignId }) {
                 status: 'draft',
                 assignee: '',
                 author: 'Aktueller Nutzer',
-                dueDate: newContent.publishDate,
+                dueDate: newContent.publishDate || null,
                 publishDate: null,
-                platform: newContent.platform,
+                platform: newContent.platform || null,
                 type: 'Task',
                 oneDriveLink: '',
                 description: `Aufgabenhülle für Content "${newContent.title}".`,
                 campaignId: newContent.campaignId || null,
+                touchpointId: newContent.touchpointId || null,
                 scope: 'single',
             });
             updateContent(contentId, { taskIds: [taskId] });
@@ -109,6 +113,28 @@ export default function NewContentModal({ onClose, defaultCampaignId }) {
                                 onChange={e => setNewContent({ ...newContent, campaignId: e.target.value })}>
                                 <option value="">Keine Kampagne</option>
                                 {campaigns.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                        <div className="form-group">
+                            <label className="form-label">Touchpoint</label>
+                            <select className="form-input" value={newContent.touchpointId}
+                                onChange={e => setNewContent({ ...newContent, touchpointId: e.target.value })}>
+                                <option value="">Kein Touchpoint</option>
+                                {touchpoints.map(tp => <option key={tp.id} value={tp.id}>{tp.name} ({tp.type})</option>)}
+                            </select>
+                        </div>
+                        <div className="form-group">
+                            <label className="form-label">Customer Journey Phase</label>
+                            <select className="form-input" value={newContent.journeyPhase}
+                                onChange={e => setNewContent({ ...newContent, journeyPhase: e.target.value })}>
+                                <option value="Awareness">Awareness</option>
+                                <option value="Consideration">Consideration</option>
+                                <option value="Purchase">Purchase</option>
+                                <option value="Retention">Retention</option>
+                                <option value="Advocacy">Advocacy</option>
                             </select>
                         </div>
                     </div>

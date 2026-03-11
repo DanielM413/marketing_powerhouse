@@ -1,8 +1,8 @@
 # 🚀 Momentum — Konzept & Umsetzungsstand
 
-> **Letzte Aktualisierung:** 10.03.2026
-> **Version:** 0.6.1 — Kanäle & Touchpoints Navigations-Integration
-> **Status:** Phase 0.5 — UI-Verfeinerung & Workflows (Navigation-Optimierung)
+> **Letzte Aktualisierung:** 11.03.2026
+> **Version:** 0.6.2 — Formular-Synchronisierung (Erstellung vs. Edit)
+> **Status:** Phase 0.5 — UI-Verfeinerung & Workflows (Konsistente Formulare)
 > **Produktname:** Momentum | **Tagline:** Deine Marketing-Kampagnen mit Momentum
 
 ---
@@ -65,8 +65,8 @@ Marketing_powerhouse/
         ├── ContentOverviewPage.jsx   ← Content-Übersicht mit KPIs
         ├── BudgetPage.jsx            ← Zugangssperre für Members
         ├── TasksPage.jsx
-        ├── CustomerJourneyPage.jsx   ← 5-Phasen Standard-Modell
-        ├── AsidasFunnelPage.jsx      ← ASIDAS-Funnel Ansicht
+        ├── CustomerJourneyPage.jsx   ← 5-Phasen Standard-Modell (Primär)
+        ├── AsidasFunnelPage.jsx      ← ASIDAS-Funnel Ansicht (Sekundär)
         ├── TouchpointsPage.jsx       ← 🆕 Kanäle & Touchpoints (in Navigation)
         ├── PositioningPage.jsx       ← Digitale Positionierung
         ├── ManualPage.jsx            ← Rollenspezifische Anleitung
@@ -184,6 +184,7 @@ const { can, isRole, currentUser } = useAuth();
 - [x] Quick-Badges (Master-Prompt, Personas, Keywords)
 - [x] **"Neue Kampagne"-Button** nur für Admin & Manager sichtbar
 - [x] 3-Schritt-Modal: Grunddaten / Master-Prompt + Zielgruppen / Keywords
+- [x] **Erweiterte Felder bei Erstellung**: Touchpoints direkte Auswahl bei Kampagnen-Anlage
 - [x] **Detailseite (3 Tabs)**: Übersicht, Creatives & Aufgaben, Performance
 - [x] **Creative-Workflow (10 Stufen)**: Entwurf → KI-Generierung → KI-Vorschlag → Review → Überarbeitung → Freigabe → Einplanung → Posting → Beobachtung → KI-Analyse
 - [x] Aufgaben nach Scope (Übergreifend vs. kanalspezifisch)
@@ -193,12 +194,12 @@ const { can, isRole, currentUser } = useAuth();
 ### ✅ Zielgruppen & Avatare
 - [x] Persona-Karten mit Avatar, Filter (B2B/B2C), Suche
 - [x] Detail-Panel (Slide-In): Demografie, Pains, Ziele, Kanäle, Journey
-- [x] Modal für neue Persona
+- [x] Modal für neue Persona (Synchronisiert mit allen Detail-Ansichts-Feldern)
 - [ ] Persona bearbeiten/löschen / Templates
 
-### 🆕 ✅ Customer Journey (`/journeys`) & ASIDAS-Funnel (`/asidas`)
-- [x] **Customer Journey (5-Phasen)**: (Awareness, Consideration, Purchase, Retention, Advocacy)
-- [x] **ASIDAS-Funnel Ansicht** (Attention, Search, Interest, Desire, Action, Share) ausgelagert in ein separates Modul
+### 🆕 ✅ Customer Journey (`/journeys`) — 5-Phasen-Modell
+- [x] **Customer Journey (5-Phasen)**: (Awareness, Consideration, Purchase, Retention, Advocacy) als primäres Modell
+- [x] **ASIDAS-Funnel Ansicht** (Attention, Search, Interest, Desire, Action, Share) als alternatives Analyse-Modell / Sekundär
 - [x] **Omnipräsenz-Matrix (ASIDAS)**: Search und Share werden als kontinuierliche, omnipräsente Verhaltensweisen visualisiert, die den Nutzer durchgehend begleiten.
 - [x] **Deep-Linking Content**: Realer Content aus der Redaktionsplanung (`initialContents`) ist direkt in den Stages verlinkt und kann per Modal geöffnet werden.
 - [x] **Touchpoint-Integration**: Klick auf einen Journey-Touchpoint öffnet nun direkt das Detail-Modal ohne Seitenwechsel.
@@ -209,7 +210,7 @@ const { can, isRole, currentUser } = useAuth();
 - [x] **In Navigation sichtbar**: Eigener Menüpunkt im Bereich "Marketing" mit Badge
 - [x] **Single-Source-of-Truth**: Alle eingesetzten Kanäle zentral angelegt und bearbeitbar (für Admin & Manager)
 - [x] **Bidirektionale Analyse**: Einblick, welche Kampagnen UND welcher Content auf diesem Kanal ausgespielt werden
-- [x] **Journey-Einordnung**: Touchpoints und Content besitzen nun das Attribut `journeyPhase` für die 1:n Zuordnung zu Phasen im ASIDAS-Funnel oder der Customer Journey.
+- [x] **Journey-Einordnung**: Touchpoints und Content besitzen nun das Attribut `journeyPhase` für die 1:n Zuordnung zu Phasen in der Customer Journey (5-Phasen). Dropdowns wurden auf dieses Modell vereinheitlicht.
 - [x] **Navigation State**: Unterstützung von Deep-Links aus anderen Modulen
 - [x] **Datenverwaltung**: Löschen und Bearbeiten von Touchpoints (nur Admin/Manager)
 - [x] **Suche & Filter**: Nach Touchpoint-Name/Description und Typ (Paid, Owned, Earned, Direct)
@@ -233,6 +234,7 @@ const { can, isRole, currentUser } = useAuth();
   - Content zeigt verlinkte Aufgaben im Detail-Modal
   - Aufgaben-Detail-Modal zeigt zugehörigen Content („Zugehöriger Content“-Sektion)
 - [x] **Rotes Flag**: Content ohne Aufgaben erscheint rot im Kalender + Warnbanner
+- [x] **Synchronisierte Formulare**: Erstellungs-Modal für Content (und Aufgaben) fragt nun dediziert Touchpoints/Journey-Phasen (5 Phasen), OneDrive-Links, u.v.m. ab, parallel zur Detail-Ansicht.
 - [x] **Aufgabenhüllen-Erstellung**: Beim Erstellen von Content kann direkt eine Entwurfs-Aufgabe generiert werden
 - [x] **ContentContext**: Globaler State für Content-Management (`addContent`, `updateContent`, `deleteContent`)
 - [x] **Detail-Modal (zentral)**: Reusable Modal (`ContentDetailModal`) zur Bearbeitung (Titel, Status, Datum, Plattform, uvm.)

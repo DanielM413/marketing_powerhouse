@@ -188,12 +188,12 @@ export default function AudiencesPage() {
             {/* New Audience Modal */}
             {showNewAudienceModal && (
                 <div className="modal-overlay" onClick={() => setShowNewAudienceModal(false)}>
-                    <div className="modal" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '600px' }}>
+                    <div className="modal" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '600px', maxHeight: '90vh', display: 'flex', flexDirection: 'column' }}>
                         <div className="modal-header">
                             <h2 className="modal-title">Neue Persona erstellen</h2>
                             <button className="btn btn-ghost btn-icon" onClick={() => setShowNewAudienceModal(false)}>✕</button>
                         </div>
-                        <div className="modal-body">
+                        <div className="modal-body" style={{ overflowY: 'auto' }}>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                                 <div className="form-group" style={{ gridColumn: '1 / -1' }}>
                                     <label className="form-label">Persona-Name</label>
@@ -224,6 +224,36 @@ export default function AudiencesPage() {
                                 <div className="form-group" style={{ gridColumn: '1 / -1' }}>
                                     <label className="form-label">Berufsfeld / Job Title</label>
                                     <input type="text" className="form-input" placeholder="z.B. Marketing Manager" />
+                                </div>
+                                <div className="form-group">
+                                    <label className="form-label">Geschlecht</label>
+                                    <input type="text" className="form-input" placeholder="z.B. Weiblich, Divers" />
+                                </div>
+                                <div className="form-group">
+                                    <label className="form-label">Einkommen</label>
+                                    <input type="text" className="form-input" placeholder="z.B. Mittel–Hoch" />
+                                </div>
+                                <div className="form-group">
+                                    <label className="form-label">Bildung</label>
+                                    <input type="text" className="form-input" placeholder="z.B. Master" />
+                                </div>
+                                <div className="form-group">
+                                    <label className="form-label">Customer Journey Phase</label>
+                                    <select className="form-input">
+                                        <option value="Awareness">Awareness</option>
+                                        <option value="Consideration">Consideration</option>
+                                        <option value="Purchase">Purchase</option>
+                                        <option value="Retention">Retention</option>
+                                        <option value="Advocacy">Advocacy</option>
+                                    </select>
+                                </div>
+                                <div className="form-group" style={{ gridColumn: '1 / -1' }}>
+                                    <label className="form-label">Bevorzugte Kanäle (kommagetrennt)</label>
+                                    <input type="text" className="form-input" placeholder="z.B. LinkedIn, Magazin, Podcast" />
+                                </div>
+                                <div className="form-group" style={{ gridColumn: '1 / -1' }}>
+                                    <label className="form-label">Entscheidungsprozess</label>
+                                    <textarea className="form-input form-textarea" placeholder="Wie trifft diese Persona Kaufentscheidungen?..." style={{ minHeight: '60px' }} />
                                 </div>
                                 <div className="form-group" style={{ gridColumn: '1 / -1' }}>
                                     <label className="form-label">Beschreibung</label>

@@ -5,6 +5,7 @@ import { touchpoints, campaigns, initialContents as content } from '../data/mock
 import { useAuth } from '../context/AuthContext';
 import PageHelp from '../components/PageHelp';
 import TouchpointDetailModal from '../components/TouchpointDetailModal';
+import NewTouchpointModal from '../components/NewTouchpointModal';
 
 const TYPE_COLORS = {
     'Paid Search': 'badge-warning',
@@ -27,6 +28,8 @@ export default function TouchpointsPage() {
     const [selectedTpId, setSelectedTpId] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [filterType, setFilterType] = useState('All');
+    const [showNewModal, setShowNewModal] = useState(false);
+    const [localTouchpoints, setLocalTouchpoints] = useState(touchpoints);
 
     // Handle initial selection from navigation state (e.g. from Journey page)
     useEffect(() => {
@@ -35,13 +38,13 @@ export default function TouchpointsPage() {
         }
     }, [location.state]);
 
-    const filtered = touchpoints.filter(tp => {
+    const filtered = localTouchpoints.filter(tp => {
         const matchSearch = tp.name.toLowerCase().includes(searchTerm.toLowerCase()) || tp.description.toLowerCase().includes(searchTerm.toLowerCase());
         const matchType = filterType === 'All' || tp.type === filterType;
         return matchSearch && matchType;
     });
 
-    const selectedTp = touchpoints.find(tp => tp.id === selectedTpId);
+    const selectedTp = localTouchpoints.find(tp => tp.id === selectedTpId);
 
     // Real-Daten Verknüpfungen
     const getLinkedCampaigns = (tpId) => {
@@ -69,7 +72,7 @@ export default function TouchpointsPage() {
                     </PageHelp>
 
                     {canManage && (
-                        <button className="btn btn-primary">
+                        <button className="btn btn-primary" onClick={() => setShowNewModal(true)}>
                             <Plus size={16} /> Neuer Kanal
                         </button>
                     )}
@@ -93,7 +96,7 @@ export default function TouchpointsPage() {
                     style={{ maxWidth: '200px' }}
                 >
                     <option value="All">Alle Typen</option>
-                    {Array.from(new Set(touchpoints.map(tp => tp.type))).map(t => (
+                    {Array.from(new Set(localTouchpoints.map(tp => tp.type))).map(t => (
                         <option key={t} value={t}>{t}</option>
                     ))}
                 </select>
@@ -145,9 +148,19 @@ export default function TouchpointsPage() {
                     touchpoint={selectedTp}
                     onClose={() => setSelectedTpId(null)}
                     onDelete={(id) => {
-                        // mock delete
+                        setLocalTouchpoints(prev => prev.filter(t => t.id !== id));
                         setSelectedTpId(null);
                     }}
+                    onSave={(updatedTp) => {
+                        setLocalTouchpoints(prev => prev.map(t => t.id === updatedTp.id ? updatedTp : t));
+                    }}
+                />
+            )}
+            
+            {showNewModal && (
+                <NewTouchpointModal
+                    onClose={() => setShowNewModal(false)}
+                    onCreate={(newTp) => setLocalTouchpoints([newTp, ...localTouchpoints])}
                 />
             )}
         </div>

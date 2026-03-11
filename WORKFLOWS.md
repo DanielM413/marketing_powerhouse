@@ -142,18 +142,17 @@ WAMOCON Academy möchte im Q2 2026 die neue **ISTQB Certified Tester Foundation 
 
 ---
 
-### Schritt 2: Customer Journey (ASIDAS) für die Kampagne skizzieren
+### Schritt 2: Customer Journey (5-Phasen-Modell) für die Kampagne skizzieren
 
 **Navigation:** `Marketing > Customer Journey`
 
 1. Wähle Persona "Job-Switcher Sarah"
-2. Pro Phase (ASIDAS) überlegen: Welche Touchpoints & welcher Content sind relevant?
-   - **Attention:** Google Ads ("ISTQB Tester Kurs"), Instagram
-   - **Search:** Google Ads (Suchmaschine), Website
-   - **Interest:** LinkedIn Post, Blog-Artikel, Webinar-LP
-   - **Desire:** E-Mail Sequence, Case Study, Testimonial
-   - **Action:** Anmelde-Formular
-   - **Share:** Alumni-Community, Referral-Program
+2. Pro Phase des 5-Phasen-Modells überlegen: Welche Touchpoints & welcher Content sind relevant?
+   - **Awareness:** Google Ads ("ISTQB Tester Kurs"), Instagram
+   - **Consideration:** LinkedIn Post, Blog-Artikel, Webinar-LP
+   - **Purchase:** E-Mail Sequence, Case Study, Testimonial, Anmelde-Formular
+   - **Retention:** Alumni-Community
+   - **Advocacy:** Referral-Program
 
 3. Überprüfe: Sind alle diese Touchpoints in **Kanäle & Touchpoints** hinterlegt? Wenn ja, gut. Wenn nein, notiere für Admin.
 
@@ -694,7 +693,7 @@ Admin Setup (Tag 1-2)
     ↓
 Manager Campaign Planning (Tag 3-7)
     ├─→ Persona Definition
-    ├─→ Journey Mapping
+    ├─→ 5-Phasen Journey Mapping
     ├─→ Content-Kalender Befüllung
     └─→ Task Delegation
           ↓
@@ -726,7 +725,7 @@ Manager Campaign Planning (Tag 3-7)
 
 **Tag 3-7 (Manager):**
 - [ ] Personas anlegen
-- [ ] ASIDAS Journey skizzieren
+- [ ] 5-Phasen Journey skizzieren
 - [ ] Kampagne erstellen
 - [ ] Content-Kalender (mit Aufgabenhüllen!)
 - [ ] Task Briefs schreiben & delegieren

@@ -3,6 +3,7 @@ import { Plus, Calendar, CheckSquare, Clock, ArrowRight, User, ExternalLink, Glo
 import { useTasks } from '../context/TaskContext';
 import { campaigns } from '../data/mockData';
 import TaskDetailModal from '../components/TaskDetailModal';
+import NewTaskModal from '../components/NewTaskModal';
 import PageHelp from '../components/PageHelp';
 
 // We map our 10-step creative status model to 5 Kanban lanes for the overview
@@ -20,11 +21,50 @@ const UI_STATE_LABELS = {
 };
 
 export default function TasksPage() {
-    const { tasks } = useTasks();
+    const { tasks, updateTaskStatus } = useTasks();
     const [view, setView] = useState('kanban');
 
-    // Modal state for Task Details
+    // Modal state for Task Details & Creation
     const [selectedTask, setSelectedTask] = useState(null);
+    const [showNewTask, setShowNewTask] = useState(false);
+
+    // Drag & Drop state
+    const [draggedTask, setDraggedTask] = useState(null);
+
+    const handleDragStart = (e, task) => {
+        setDraggedTask(task);
+        e.dataTransfer.setData('taskId', task.id);
+        e.dataTransfer.effectAllowed = 'move';
+        
+        // Add a class to the dragging element for styling
+        e.currentTarget.classList.add('dragging');
+    };
+
+    const handleDragEnd = (e) => {
+        setDraggedTask(null);
+        e.currentTarget.classList.remove('dragging');
+    };
+
+    const handleDragOver = (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        e.currentTarget.style.borderColor = 'var(--color-primary)';
+        e.currentTarget.style.background = 'rgba(99, 102, 241, 0.1)';
+    };
+
+    const handleDragLeave = (e) => {
+        e.currentTarget.style.borderColor = '';
+        e.currentTarget.style.background = 'var(--bg-base)';
+    };
+
+    const handleDrop = (e, targetStatus) => {
+        e.preventDefault();
+        const taskId = e.dataTransfer.getData('taskId');
+        if (taskId && targetStatus) {
+            updateTaskStatus(taskId, targetStatus);
+        }
+        setDraggedTask(null);
+    };
 
     const getGroupTasks = (groupId) => {
         const group = STATUS_GROUPS.find(g => g.id === groupId);
@@ -95,7 +135,7 @@ export default function TasksPage() {
                         <button className={`btn btn-sm ${view === 'kanban' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setView('kanban')}><GripVertical size={14} /> Kanban</button>
                         <button className={`btn btn-sm ${view === 'list' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setView('list')}><LayoutList size={14} /> Liste</button>
                     </div>
-                    <button className="btn btn-primary" onClick={() => alert('Wird demnächst auf das globale Modal umgestellt.')}>
+                    <button className="btn btn-primary" onClick={() => setShowNewTask(true)}>
                         <Plus size={16} /> Neue Aufgabe
                     </button>
                 </div>
@@ -115,7 +155,54 @@ export default function TasksPage() {
                                     </div>
                                     <span className="kanban-column-count">{groupTasks.length}</span>
                                 </div>
-                                {groupTasks.map(task => <TaskCard key={task.id} task={task} />)}
+                                
+                                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                    {/* Sub-Dropping Zones when Dragging */}
+                                    {draggedTask && (
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '8px' }}>
+                                            {group.statuses.map(s => (
+                                                <div 
+                                                    key={s} 
+                                                    onDragOver={handleDragOver}
+                                                    onDragLeave={handleDragLeave}
+                                                    onDrop={(e) => handleDrop(e, s)}
+                                                    style={{
+                                                        padding: '12px 8px',
+                                                        border: draggedTask.status === s ? '2px dashed var(--text-tertiary)' : `2px dashed ${group.color}`,
+                                                        borderRadius: 'var(--radius-sm)',
+                                                        background: 'var(--bg-base)',
+                                                        textAlign: 'center',
+                                                        fontSize: '0.8rem',
+                                                        fontWeight: 600,
+                                                        color: draggedTask.status === s ? 'var(--text-tertiary)' : group.color,
+                                                        transition: 'all 0.2s ease',
+                                                        opacity: draggedTask.status === s ? 0.4 : 1
+                                                    }}
+                                                >
+                                                    Hier droppen: {UI_STATE_LABELS[s] || s}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+
+                                    {/* Task Cards */}
+                                    {groupTasks.map(task => (
+                                        <div 
+                                            key={task.id} 
+                                            draggable 
+                                            onDragStart={(e) => handleDragStart(e, task)} 
+                                            onDragEnd={handleDragEnd}
+                                            style={{ 
+                                                opacity: draggedTask?.id === task.id ? 0.3 : (draggedTask ? 0.7 : 1),
+                                                transform: draggedTask?.id === task.id ? 'scale(0.95)' : 'none',
+                                                transition: 'all 0.2s',
+                                                cursor: 'grab'
+                                            }}
+                                        >
+                                            <TaskCard task={task} />
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                         );
                     })}
@@ -171,6 +258,11 @@ export default function TasksPage() {
                     task={selectedTask}
                     onClose={() => setSelectedTask(null)}
                 />
+            )}
+
+            {/* NEUE AUFGABE MODAL */}
+            {showNewTask && (
+                <NewTaskModal onClose={() => setShowNewTask(false)} />
             )}
         </div>
     );

@@ -15,7 +15,7 @@ const TYPE_COLORS = {
     'Product': 'badge-default'
 };
 
-export default function TouchpointDetailModal({ touchpoint, onClose, onDelete }) {
+export default function TouchpointDetailModal({ touchpoint, onClose, onDelete, onSave }) {
     const { can } = useAuth();
     const navigate = useNavigate();
     const canManage = can('canManageTouchpoints');
@@ -140,21 +140,11 @@ export default function TouchpointDetailModal({ touchpoint, onClose, onDelete })
                                 {isEditing ? (
                                     <select className="form-select" value={editedTp.journeyPhase || ''} onChange={e => setEditedTp({ ...editedTp, journeyPhase: e.target.value || null })}>
                                         <option value="">Keine Phase</option>
-                                        <optgroup label="ASIDAS">
-                                            <option value="Attention">Attention</option>
-                                            <option value="Search">Search</option>
-                                            <option value="Interest">Interest</option>
-                                            <option value="Desire">Desire</option>
-                                            <option value="Action">Action</option>
-                                            <option value="Share">Share</option>
-                                        </optgroup>
-                                        <optgroup label="Customer Journey">
-                                            <option value="Awareness">Awareness</option>
-                                            <option value="Consideration">Consideration</option>
-                                            <option value="Purchase">Purchase</option>
-                                            <option value="Retention">Retention</option>
-                                            <option value="Advocacy">Advocacy</option>
-                                        </optgroup>
+                                        <option value="Awareness">Awareness</option>
+                                        <option value="Consideration">Consideration</option>
+                                        <option value="Purchase">Purchase</option>
+                                        <option value="Retention">Retention</option>
+                                        <option value="Advocacy">Advocacy</option>
                                     </select>
                                 ) : (
                                     <span style={{ fontWeight: 500, color: 'var(--text-secondary)' }}>{touchpoint.journeyPhase || 'Nicht verknüpft'}</span>
@@ -210,8 +200,8 @@ export default function TouchpointDetailModal({ touchpoint, onClose, onDelete })
 
                 {isEditing && (
                     <div className="modal-footer" style={{ background: 'var(--bg-surface)' }}>
-                        <button className="btn btn-ghost" onClick={() => setIsEditing(false)}>Abbrechen</button>
-                        <button className="btn btn-primary" onClick={() => setIsEditing(false)}>Speichern</button>
+                        <button className="btn btn-ghost" onClick={() => { setEditedTp({ ...touchpoint }); setIsEditing(false); }}>Abbrechen</button>
+                        <button className="btn btn-primary" onClick={() => { if (onSave) onSave(editedTp); setIsEditing(false); }}>Speichern</button>
                     </div>
                 )}
             </div>

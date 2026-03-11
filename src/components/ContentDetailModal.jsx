@@ -213,21 +213,11 @@ export default function ContentDetailModal({ content, onClose }) {
                             {isEditing ? (
                                 <select className="form-select" style={{ padding: '4px' }} value={edited.journeyPhase || ''} onChange={e => setEdited({ ...edited, journeyPhase: e.target.value || null })}>
                                     <option value="">Keine Phase</option>
-                                    <optgroup label="ASIDAS">
-                                        <option value="Attention">Attention</option>
-                                        <option value="Search">Search</option>
-                                        <option value="Interest">Interest</option>
-                                        <option value="Desire">Desire</option>
-                                        <option value="Action">Action</option>
-                                        <option value="Share">Share</option>
-                                    </optgroup>
-                                    <optgroup label="Customer Journey">
-                                        <option value="Awareness">Awareness</option>
-                                        <option value="Consideration">Consideration</option>
-                                        <option value="Purchase">Purchase</option>
-                                        <option value="Retention">Retention</option>
-                                        <option value="Advocacy">Advocacy</option>
-                                    </optgroup>
+                                    <option value="Awareness">Awareness</option>
+                                    <option value="Consideration">Consideration</option>
+                                    <option value="Purchase">Purchase</option>
+                                    <option value="Retention">Retention</option>
+                                    <option value="Advocacy">Advocacy</option>
                                 </select>
                             ) : (
                                 <div style={{ fontWeight: 500 }}>{content.journeyPhase || 'Nicht verknüpft'}</div>

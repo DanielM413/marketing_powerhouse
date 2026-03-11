@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Search, Calendar, Users, Bot, Tag } from 'lucide-react';
-import { campaigns, audiences as allAudiences } from '../data/mockData';
+import { Plus, Search, Calendar, Users, Bot, Tag, MapPin } from 'lucide-react';
+import { campaigns, audiences as allAudiences, touchpoints } from '../data/mockData';
 import { useAuth } from '../context/AuthContext';
 import PageHelp from '../components/PageHelp';
 
@@ -24,6 +24,7 @@ export default function CampaignsPage() {
     const [modalStep, setModalStep] = useState(1); // 1 = Basis, 2 = Prompt & Zielgruppen, 3 = Keywords
     const [selectedAudiences, setSelectedAudiences] = useState([]);
     const [campaignKeywords, setCampaignKeywords] = useState('');
+    const [selectedTouchpoints, setSelectedTouchpoints] = useState([]);
 
     const filteredCampaigns = campaigns
         .filter(c => filter === 'all' || c.status === filter)
@@ -33,6 +34,10 @@ export default function CampaignsPage() {
         setSelectedAudiences(prev =>
             prev.includes(id) ? prev.filter(a => a !== id) : [...prev, id]
         );
+    };
+
+    const toggleTouchpoint = (id) => {
+        setSelectedTouchpoints(prev => prev.includes(id) ? prev.filter(t => t !== id) : [...prev, id]);
     };
 
     const closeModal = () => {
@@ -278,10 +283,40 @@ export default function CampaignsPage() {
                                         <input type="number" className="form-input" placeholder="z.B. 15000" />
                                     </div>
                                     <div className="form-group" style={{ marginBottom: 0 }}>
-                                        <label className="form-label">Kanäle</label>
-                                        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                                            {['E-Mail', 'Social Media', 'Google Ads', 'Meta Ads', 'SEO', 'Content', 'LinkedIn'].map(ch => (
-                                                <button key={ch} className="btn btn-secondary btn-sm">{ch}</button>
+                                        <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                            <MapPin size={14} style={{ color: 'var(--color-primary)' }} />
+                                            Touchpoints / Kanäle
+                                        </label>
+                                        <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginBottom: '10px' }}>
+                                            Wähle die vordefinierten Touchpoints für deine Kampagne aus.
+                                        </p>
+                                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                                            {touchpoints.map(tp => (
+                                                <div
+                                                    key={tp.id}
+                                                    onClick={() => toggleTouchpoint(tp.id)}
+                                                    style={{
+                                                        display: 'flex', alignItems: 'center', gap: '8px',
+                                                        padding: '8px 12px', borderRadius: 'var(--radius-md)',
+                                                        background: selectedTouchpoints.includes(tp.id) ? 'rgba(37,99,235,0.1)' : 'var(--bg-elevated)',
+                                                        border: `1px solid ${selectedTouchpoints.includes(tp.id) ? 'var(--color-primary)' : 'transparent'}`,
+                                                        cursor: 'pointer', transition: 'all 0.2s ease',
+                                                        fontSize: 'var(--font-size-xs)'
+                                                    }}
+                                                >
+                                                    <div style={{
+                                                        width: '16px', height: '16px', borderRadius: '4px', flexShrink: 0,
+                                                        border: `2px solid ${selectedTouchpoints.includes(tp.id) ? 'var(--color-primary)' : 'var(--border-color)'}`,
+                                                        background: selectedTouchpoints.includes(tp.id) ? 'var(--color-primary)' : 'var(--bg-surface)',
+                                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                    }}>
+                                                        {selectedTouchpoints.includes(tp.id) && <span style={{ color: 'white', fontSize: '12px' }}>✓</span>}
+                                                    </div>
+                                                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                                        <span style={{ fontWeight: 600 }}>{tp.name}</span>
+                                                        <span style={{ color: 'var(--text-tertiary)', fontSize: '0.65rem' }}>{tp.type}</span>
+                                                    </div>
+                                                </div>
                                             ))}
                                         </div>
                                     </div>
