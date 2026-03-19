@@ -49,7 +49,7 @@ Marketing_powerhouse/
 │   └── migrate.mjs                   ← DB-Schema + Seed-Daten Migrationsskript
 ├── app/                              ← Next.js App Router (Seiten-Routing)
 │   ├── layout.tsx                    ← Root-Layout (HTML, Fonts, Providers)
-│   ├── providers.tsx                 ← Client-seitiger Context-Provider-Wrapper
+│   ├── providers.tsx                 ← Client-seitiger Context-Provider-Wrapper (Auth, Notification, Data, Content, Task)
 │   ├── client-shell.tsx              ← Auth-Gate + Layout (Sidebar/Header)
 │   ├── page.tsx                      ← Dashboard (/)
 │   ├── campaigns/
@@ -79,7 +79,10 @@ Marketing_powerhouse/
     │   ├── AuthContext.tsx            ← RBAC: Rollen, Permissions, Login via Supabase
     │   ├── DataContext.tsx            ← Zentraler Daten-Provider (Supabase CRUD)
     │   ├── ContentContext.tsx         ← Content-State-Management (async)
-    │   └── TaskContext.tsx            ← Aufgaben-State-Management (async)
+    │   ├── TaskContext.tsx            ← Aufgaben-State-Management (async)
+    │   └── NotificationContext.tsx    ← Benachrichtigungssystem (27 Typen, Prioritäten, Settings)
+    ├── hooks/
+    │   └── useNotifyActions.ts       ← Wrapper-Hook: CRUD-Aktionen mit Notification-Trigger
     ├── data/
     │   └── mockData.ts               ← (Legacy, nicht mehr verwendet)
     ├── styles/
@@ -94,7 +97,9 @@ Marketing_powerhouse/
     ├── components/                   ← Wiederverwendbare UI-Komponenten
     │   ├── Layout.tsx                ← App-Shell (Sidebar + Header + Content)
     │   ├── Sidebar.tsx               ← Navigation (next/link, usePathname)
-    │   ├── Header.tsx                ← Breadcrumb, Rollen-Badge
+    │   ├── Header.tsx                ← Breadcrumb, Benachrichtigungs-Glocke
+    │   ├── NotificationBell.tsx      ← Benachrichtigungs-Dropdown mit Badge-Counter
+    │   ├── NotificationWatcher.tsx   ← Auto-Prüfung: Deadlines + Budget-Schwellen
     │   ├── PageHelp.tsx              ← Kontextuelle Hilfe-Komponente
     │   ├── DashboardViews.tsx        ← Admin/Manager/Member Dashboard-Ansichten
     │   ├── DashboardComponents.tsx   ← Dashboard-Statistiken, BudgetOverview
@@ -331,7 +336,7 @@ const { can, isRole, currentUser } = useAuth();
 - [x] **Handbuch & Workflow** (`/manual`): Rollenspezifische Anleitung für Admin, Manager und Member
 - [x] Interaktive Reiter pro Rolle (Strategie, Planung, Umsetzung)
 - [x] Visuelle Platzhalter-Illustartionen für Screenshots
-- [x] **Kontextuelle Hilfe (`PageHelp`)**: Einheitliche `PageHelp.jsx` Komponente auf allen Hauptseiten (Dashboard, Kampagnen, SEO, Budget, etc.) zur detaillierten Erklärung der jeweiligen Screen-Funktionen.
+- [x] **Kontextuelle Hilfe (`PageHelp`)**: Einheitliche `PageHelp.tsx` Komponente auf allen Hauptseiten (Dashboard, Kampagnen, SEO, Budget, etc.) zur detaillierten Erklärung der jeweiligen Screen-Funktionen.
 
 ### ✅ Einstellungen
 - [x] Allgemein, Team-Übersicht, Integrationen, Benachrichtigungen
@@ -339,7 +344,26 @@ const { can, isRole, currentUser } = useAuth();
 - [x] **Admin**: Tab "Benutzerverwaltung" mit Rollen-Dropdown pro User
 - [x] **Speichern/Verwerfen**: Workspace-Einstellungen (lokal)
 - [x] **Team-Aktionen**: Placeholder für Einladen, Bearbeiten, Entfernen
+- [x] **Benachrichtigungs-Einstellungen**: Funktionale Toggles (6 Kategorien) mit Live-Speicherung
 - [ ] Echtes Speichern in DB, API-Key Management
+
+### 🆕 ✅ Benachrichtigungssystem
+- [x] **NotificationContext** (`src/context/NotificationContext.tsx`): Zentraler Provider für alle Benachrichtigungen
+- [x] **NotificationBell** (`src/components/NotificationBell.tsx`): Dropdown-Panel im Header mit Badge-Counter
+- [x] **NotificationWatcher** (`src/components/NotificationWatcher.tsx`): Automatische Deadline- und Budget-Prüfung beim Login
+- [x] **useNotifyActions** (`src/hooks/useNotifyActions.ts`): Wrapper-Hook der alle CRUD-Aktionen mit Notifications koppelt
+- [x] **27 Notification-Typen**: Kampagnen (3), Aufgaben (7), Deadlines (4), Content (3), Zielgruppen (3), Touchpoints (3), Budget (4), KI (1), Positionierung (1), Rollen (1)
+- [x] **Rollenbasierte Zustellung**: Benachrichtigungen werden intelligent an relevante Empfänger geroutet
+  - Member-Aktionen → Kampagnen-Manager
+  - Manager-Aktionen → zugewiesene Team-Members
+  - Deadline-Warnungen → Assignee + Kampagnen-Manager
+  - Budget-Alerts → Alle Admins + Manager
+- [x] **4-stufige Prioritäten**: urgent (rot), high (orange), medium (lila), low (grau)
+- [x] **Deadline-Prüfung**: Automatische Prüfung beim Laden auf Aufgaben, die heute/morgen fällig sind oder veröffentlicht werden sollen
+- [x] **Budget-Schwellenwerte**: Automatische Warnung bei 80%, 90% und >100% Budgetauslastung
+- [x] **Einstellungen**: 6 konfigurierbare Kategorien (Kampagnen-Updates, Budget-Alerts, Aufgaben-Erinnerungen, Team-Aktivitäten, Wöchentlicher Report, KPI-Anomalien)
+- [x] **Persistenz**: Notifications und Settings im localStorage gespeichert
+- [x] **Alle CRUD-Aktionen gekoppelt**: Kampagnen, Aufgaben, Content, Zielgruppen, Touchpoints, Positionierung
 
 ---
 

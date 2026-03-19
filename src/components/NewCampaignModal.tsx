@@ -1,13 +1,15 @@
 import { useState } from 'react';
 import { Plus, Users, Bot, Tag, MapPin, UserCheck, UsersRound } from 'lucide-react';
 import { useData } from '../context/DataContext';
+import { useNotifyActions } from '../hooks/useNotifyActions';
 
 interface NewCampaignModalProps {
     onClose: () => void;
 }
 
 export default function NewCampaignModal({ onClose }: NewCampaignModalProps) {
-    const { audiences: allAudiences, touchpoints, addCampaign, users } = useData();
+    const { audiences: allAudiences, touchpoints, users } = useData();
+    const { notifyAddCampaign } = useNotifyActions();
     const [modalStep, setModalStep] = useState(1);
     const [campaignName, setCampaignName] = useState('');
     const [description, setDescription] = useState('');
@@ -301,7 +303,7 @@ export default function NewCampaignModal({ onClose }: NewCampaignModalProps) {
                             </button>
                         ) : (
                             <button className="btn btn-primary" onClick={async () => {
-                                await addCampaign({
+                                await notifyAddCampaign({
                                     name: campaignName || 'Neue Kampagne',
                                     status: 'planned',
                                     startDate,

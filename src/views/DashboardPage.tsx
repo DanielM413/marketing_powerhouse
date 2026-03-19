@@ -44,6 +44,7 @@ export default function DashboardPage() {
                             <li><strong>Manager:</strong> Sehen aktive Kampagnen, deren Content + detaillierte Aufgaben in Farblogik sowie das Kampagnenbudget.</li>
                             <li><strong>Member:</strong> Bekommen alle eigenen zugewiesenen Aufgaben in einer priorisierten Farblogik angezeigt (Rot = eilig, Gelb = demnächst, Grün = im Plan).</li>
                             <li><strong>Admin:</strong> Bekommen die globale Statistik und Gesamtübersicht des Performance-Trends über alle Bereiche + das Budget.</li>
+                            <li><strong>Benachrichtigungen:</strong> Die Glocke oben rechts zeigt dir ungelesene Benachrichtigungen an — z.B. neue Aufgaben, Deadline-Warnungen, Kampagnen-Updates und Budget-Alerts.</li>
                         </ul>
                     </PageHelp>
                     <button className="btn btn-secondary" onClick={() => router.push('/campaigns')}>Neue Kampagne</button>

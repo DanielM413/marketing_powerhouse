@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import Sidebar from './Sidebar';
 import Header from './Header';
+import NotificationWatcher from './NotificationWatcher';
 
 interface LayoutProps {
     children: ReactNode;
@@ -10,6 +11,7 @@ interface LayoutProps {
 export default function Layout({ children, onLogout }: LayoutProps) {
     return (
         <div className="app-layout">
+            <NotificationWatcher />
             <Sidebar onLogout={onLogout} />
             <div className="app-main">
                 <Header />

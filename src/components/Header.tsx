@@ -1,5 +1,6 @@
 import { usePathname, useRouter } from 'next/navigation';
-import { Bell, HelpCircle } from 'lucide-react';
+import { HelpCircle } from 'lucide-react';
+import NotificationBell from './NotificationBell';
 
 const routeTitles: Record<string, { breadcrumb: string; title: string }> = {
     '/': { breadcrumb: 'Dashboard', title: 'Übersicht' },
@@ -37,10 +38,7 @@ export default function Header() {
             </div>
 
             <div className="header-right">
-                <button className="header-icon-btn" title="Benachrichtigungen">
-                    <Bell size={20} />
-                    <span className="notification-dot"></span>
-                </button>
+                <NotificationBell />
 
                 <button className="header-icon-btn" title="Zur Anleitung" onClick={() => router.push('/manual')}>
                     <HelpCircle size={20} />

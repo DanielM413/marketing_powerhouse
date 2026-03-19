@@ -3,6 +3,7 @@ import type { Audience } from '../types';
 import { Plus, Search, Users, Target, Megaphone, ChevronRight, Tag, MapPin, Briefcase, Heart } from 'lucide-react';
 import { useData } from '../context/DataContext';
 import { useAuth } from '../context/AuthContext';
+import { useNotifyActions } from '../hooks/useNotifyActions';
 import PageHelp from '../components/PageHelp';
 import AudienceDetailModal from '../components/AudienceDetailModal';
 
@@ -17,7 +18,8 @@ const typeConfig = {
 };
 
 export default function AudiencesPage() {
-    const { audiences, campaigns, addAudience } = useData();
+    const { audiences, campaigns } = useData();
+    const { notifyAddAudience } = useNotifyActions();
     const { can } = useAuth();
     const [searchQuery, setSearchQuery] = useState('');
     const [segmentFilter, setSegmentFilter] = useState('all');
@@ -39,7 +41,7 @@ export default function AudiencesPage() {
         const initials = newAud.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
         const colors = ['#ef4444','#f59e0b','#10b981','#3b82f6','#8b5cf6','#ec4899'];
         const color = colors[Math.floor(Math.random() * colors.length)];
-        addAudience({
+        notifyAddAudience({
             initials,
             color,
             ...newAud,

@@ -12,6 +12,7 @@ import { CONTENT_TYPE_COLORS } from '../lib/constants';
 import { useAuth } from '../context/AuthContext';
 import { useTasks } from '../context/TaskContext';
 import { useContents, CONTENT_STATUSES } from '../context/ContentContext';
+import { useNotifyActions } from '../hooks/useNotifyActions';
 import TaskDetailModal from '../components/TaskDetailModal';
 import ContentDetailModal from '../components/ContentDetailModal';
 import NewContentModal from '../components/NewContentModal';
@@ -28,7 +29,8 @@ export default function CampaignDetailPage() {
     const id = params.id as string;
     const router = useRouter();
     const { can } = useAuth();
-    const { campaigns, audiences, users: testUsers, touchpoints, deleteCampaign, loading } = useData();
+    const { campaigns, audiences, users: testUsers, touchpoints, loading } = useData();
+    const { notifyDeleteCampaign } = useNotifyActions();
     const canDelete = can('canDeleteItems');
     const campaign = campaigns.find(c => c.id === id);
     const status = campaign ? statusConfig[campaign.status] : statusConfig.planned;
@@ -49,6 +51,7 @@ export default function CampaignDetailPage() {
 
     // ─── Creatives / Aufgaben ───
     const { tasks, addTask, updateTaskStatus, analyzeTask } = useTasks();
+    const { notifyAddTask, notifyUpdateTaskStatus, notifyAnalyzeTask } = useNotifyActions();
     const { contents } = useContents();
     const creatives = tasks.filter(t => t.campaignId === id);
     const campaignContents = contents.filter(c => c.campaignId === id);
@@ -61,15 +64,17 @@ export default function CampaignDetailPage() {
 
     // ─── Handlers ───
     const handleStatusChange = (creativeId, newStatus) => {
-        updateTaskStatus(creativeId, newStatus);
+        const task = creatives.find(c => c.id === creativeId);
+        notifyUpdateTaskStatus(creativeId, newStatus, task);
     };
 
     const handleAnalyze = (creativeId) => {
-        analyzeTask(creativeId);
+        const task = creatives.find(c => c.id === creativeId);
+        notifyAnalyzeTask(creativeId, task);
     };
     const handleAddCreative = () => {
         if (!newCreative.title.trim()) return;
-        addTask({
+        notifyAddTask({
             ...newCreative,
             platform: newCreative.scope === 'all' ? null : newCreative.platform,
             status: 'draft' as import('../types').TaskStatus,
@@ -148,7 +153,7 @@ export default function CampaignDetailPage() {
                         {canDelete && (
                             <button className="btn btn-ghost" style={{ color: '#ef4444' }} onClick={async () => {
                                 if (window.confirm('Möchtest du diese Kampagne wirklich löschen?')) {
-                                    await deleteCampaign(campaign.id);
+                                    await notifyDeleteCampaign(campaign.id);
                                     router.push('/campaigns');
                                 }
                             }}>

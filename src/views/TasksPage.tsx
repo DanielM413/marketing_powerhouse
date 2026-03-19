@@ -4,6 +4,7 @@ import { Plus, Calendar, CheckSquare, Clock, ArrowRight, User, ExternalLink, Glo
 import { useTasks } from '../context/TaskContext';
 import { useData } from '../context/DataContext';
 import { useAuth } from '../context/AuthContext';
+import { useNotifyActions } from '../hooks/useNotifyActions';
 import TaskDetailModal from '../components/TaskDetailModal';
 import NewTaskModal from '../components/NewTaskModal';
 import PageHelp from '../components/PageHelp';
@@ -38,9 +39,10 @@ function getDateUrgency(task: Task): 'overdue' | 'due-soon' | 'live' | 'normal' 
 }
 
 export default function TasksPage() {
-    const { tasks, updateTaskStatus } = useTasks();
+    const { tasks } = useTasks();
     const { campaigns } = useData();
     const { can } = useAuth();
+    const { notifyUpdateTaskStatus } = useNotifyActions();
     const [view, setView] = useState('kanban');
 
     // Modal state for Task Details & Creation
@@ -87,7 +89,10 @@ export default function TasksPage() {
     const handleColumnDrop = (e: React.DragEvent, defaultStatus: TaskStatus) => {
         e.preventDefault();
         const taskId = e.dataTransfer.getData('text/plain') || draggingTaskId.current;
-        if (taskId) updateTaskStatus(taskId, defaultStatus);
+        if (taskId) {
+            const task = tasks.find(t => t.id === taskId);
+            notifyUpdateTaskStatus(taskId, defaultStatus, task);
+        }
         draggingTaskId.current = null;
         setDragOverGroup(null);
         setDragOverStatus(null);
@@ -112,7 +117,10 @@ export default function TasksPage() {
         e.preventDefault();
         e.stopPropagation();
         const taskId = e.dataTransfer.getData('text/plain') || draggingTaskId.current;
-        if (taskId) updateTaskStatus(taskId, status);
+        if (taskId) {
+            const task = tasks.find(t => t.id === taskId);
+            notifyUpdateTaskStatus(taskId, status, task);
+        }
         draggingTaskId.current = null;
         setDragOverGroup(null);
         setDragOverStatus(null);

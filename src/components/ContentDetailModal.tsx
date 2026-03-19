@@ -2,9 +2,10 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Calendar, FileText, CheckCircle, Plus, Clock, User, Edit2, Save, X, Trash2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { useContents, CONTENT_STATUSES, CONTENT_STATUS_ORDER } from '../context/ContentContext';
+import { CONTENT_STATUSES, CONTENT_STATUS_ORDER } from '../context/ContentContext';
 import { useTasks } from '../context/TaskContext';
 import { useData } from '../context/DataContext';
+import { useNotifyActions } from '../hooks/useNotifyActions';
 import { CONTENT_TYPE_COLORS } from '../lib/constants';
 import { ContentLinkedTasks } from './ContentLinkedTasks';
 import type { ContentItem, ContentStatus } from '../types';
@@ -20,8 +21,8 @@ interface ContentDetailModalProps {
 
 export default function ContentDetailModal({ content, onClose }: ContentDetailModalProps) {
     const { currentUser, can } = useAuth();
-    const { updateContent, deleteContent } = useContents();
-    const { tasks, addTask } = useTasks();
+    const { notifyUpdateContent, notifyDeleteContent, notifyAddTask } = useNotifyActions();
+    const { tasks } = useTasks();
     const { campaigns, touchpoints } = useData();
     const [isEditing, setIsEditing] = useState(false);
     const [edited, setEdited] = useState({ ...content });
@@ -48,7 +49,7 @@ export default function ContentDetailModal({ content, onClose }: ContentDetailMo
     const st = CONTENT_STATUSES[content.status];
 
     const handleSave = () => {
-        updateContent(content.id, edited);
+        notifyUpdateContent(content.id, edited, content);
         setIsEditing(false);
         onClose();
     };
@@ -56,7 +57,7 @@ export default function ContentDetailModal({ content, onClose }: ContentDetailMo
     const handleAddTask = () => {
         if (!newTaskTitle.trim()) return;
         const taskId = 't' + Date.now();
-        addTask({
+        notifyAddTask({
             id: taskId,
             title: newTaskTitle,
             status: 'draft',
@@ -72,9 +73,9 @@ export default function ContentDetailModal({ content, onClose }: ContentDetailMo
             scope: 'single',
         });
         // Link the task to this content
-        updateContent(content.id, {
+        notifyUpdateContent(content.id, {
             taskIds: [...(content.taskIds || []), taskId]
-        });
+        }, content);
         setNewTaskTitle('');
         setNewTaskPlatform(content.platform || '');
         setNewTaskAssignee('');
@@ -105,7 +106,7 @@ export default function ContentDetailModal({ content, onClose }: ContentDetailMo
                         {canDelete && !isEditing && (
                             <button className="btn btn-ghost btn-sm btn-icon" style={{ color: '#ef4444' }} onClick={async () => {
                                 if (window.confirm('Möchtest du diesen Content wirklich löschen?')) {
-                                    await deleteContent(content.id);
+                                    await notifyDeleteContent(content.id, content);
                                     onClose();
                                 }
                             }} title="Löschen">

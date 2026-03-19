@@ -4,7 +4,7 @@ import {
     Calendar, CheckSquare, Wallet, Settings, CheckCircle,
     FileText, Lightbulb, UserCheck, Search, Image as ImageIcon,
     MessageSquare, AlertTriangle, Link as LinkIcon, Map,
-    GitBranch, Clock, Users, Zap
+    GitBranch, Clock, Users, Zap, Bell
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { PlaceholderImage, SectionTitle, TipBox, AccordionItem, TableOfContents, WorkflowCard } from '../components/ManualComponents';
@@ -24,7 +24,8 @@ export default function ManualPage() {
     const adminSections = [
         'Die Digitale Positionierung pflegen',
         'Systemeinstellungen & Integrationen',
-        'Benutzerverwaltung & Berechtigungen'
+        'Benutzerverwaltung & Berechtigungen',
+        'Benachrichtigungssystem'
     ];
 
     const managerSections = [
@@ -40,7 +41,8 @@ export default function ManualPage() {
         'Der Start in den Tag: Das Dashboard',
         'Das Briefing lesen',
         'Umsetzung & OneDrive Link eintragen',
-        'Den Kanban-Status pflegen'
+        'Den Kanban-Status pflegen',
+        'Benachrichtigungen nutzen'
     ];
 
     return (
@@ -101,12 +103,12 @@ export default function ManualPage() {
 
                         <AccordionItem id="section-1" title="Systemeinstellungen & Integrationen" icon={Settings} color="#8b5cf6">
                             <div style={{ color: 'var(--text-secondary)', lineHeight: 1.7 }}>
-                                <p style={{ marginBottom: '16px' }}>Unter "Einstellungen" managst du globale Parameter, Notifications und vor allem die API-Anbindungen.</p>
+                                <p style={{ marginBottom: '16px' }}>Unter "Einstellungen" managst du globale Parameter, Benachrichtigungen und vor allem die API-Anbindungen.</p>
                                 <ul style={{ listStyleType: 'disc', paddingLeft: '24px', marginBottom: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                     <li><strong>Firmenprofil:</strong> Ändere den Namen und das globale Branding.</li>
                                     <li><strong>Kanäle & Touchpoints (Verwaltung):</strong> Du hast Vollzugriff auf die Central-Verwaltung aller Marketing-Kanäle. Stelle sicher, dass alle verwendeten Touchpoints (Google Ads, LinkedIn, E-Mail-CRM, etc.) hier hinterlegt sind, damit Manager später darauf aufbauen können. Jeder Touchpoint zeigt automatisch seine aggregierten <strong>Kanal-KPIs</strong> (Impressions, Clicks, CTR, Spend, CPC, CPA).</li>
                                     <li><strong>Integrationen:</strong> Hier hinterlegst du in Zukunft API-Keys für OpenAI, Meta Ads, Google Analytics oder LinkedIn. Diese Keys werden systemweit verschlüsselt genutzt.</li>
-                                    <li><strong>Benachrichtigungen:</strong> Lege fest, ob das System bei neuen Kampagnen oder kritischen Budget-Grenzen Warnmails versendet.</li>
+                                    <li><strong>Benachrichtigungen:</strong> Im Tab "Benachrichtigungen" in den Einstellungen kannst du alle Notification-Kanäle aktivieren/deaktivieren: Kampagnen-Updates, Budget-Alerts, Aufgaben-Erinnerungen, Team-Aktivitäten, wöchentliche Reports und KPI-Anomalien. Alle Änderungen werden sofort gespeichert.</li>
                                 </ul>
                                 <PlaceholderImage
                                     title="Einstellungs-Dashboard" icon={Settings} color="#8b5cf6"
@@ -125,6 +127,24 @@ export default function ManualPage() {
                                 </ul>
                                 <TipBox title="Sicherheit">
                                     Befördere Nutzer nur zum Admin, wenn sie wirklich globale Systemeinstellungen (wie API-Keys) ändern dürfen. In 90% der Fälle ist die Manager-Rolle für Teamleiter völlig ausreichend.
+                                </TipBox>
+                            </div>
+                        </AccordionItem>
+
+                        <AccordionItem id="section-3" title="Benachrichtigungssystem" icon={Bell} color="#f59e0b">
+                            <div style={{ color: 'var(--text-secondary)', lineHeight: 1.7 }}>
+                                <p style={{ marginBottom: '16px' }}>Das Benachrichtigungssystem informiert alle Benutzer in Echtzeit über relevante Ereignisse im System – angepasst an ihre Rolle und Zuordnung.</p>
+                                <ul style={{ listStyleType: 'disc', paddingLeft: '24px', marginBottom: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                    <li><strong>Benachrichtigungs-Glocke:</strong> In der Kopfleiste zeigt die Glocke die Anzahl ungelesener Benachrichtigungen. Ein Klick öffnet das Dropdown mit allen aktuellen Meldungen.</li>
+                                    <li><strong>Rollenbasierte Zustellung:</strong> Benachrichtigungen werden intelligent gefiltert. Admins und Manager erhalten Budget-Alerts, Kampagnen-Updates und Deadline-Warnungen. Members erhalten Benachrichtigungen über zugewiesene Aufgaben und Freigaben.</li>
+                                    <li><strong>Kampagnen-Zuordnung:</strong> Alle Aktionen von Team-Mitgliedern innerhalb einer Kampagne werden automatisch an den verantwortlichen Manager gemeldet (z.B. Statusänderungen, KI-Feedback, Review-Einreichungen).</li>
+                                    <li><strong>Deadline-Warnungen:</strong> Aufgaben, die morgen fällig sind oder heute veröffentlicht werden sollen, lösen automatisch Benachrichtigungen an den Zuständigen und den Kampagnen-Manager aus.</li>
+                                    <li><strong>Budget-Alerts:</strong> Bei 80%, 90% und 100% Budgetauslastung werden alle Admins und Manager automatisch benachrichtigt.</li>
+                                    <li><strong>Prioritäten:</strong> Benachrichtigungen sind farblich priorisiert — von Rot (dringend: Budget überschritten, Aufgabe heute fällig) über Orange (hoch) und Lila (mittel) bis Grau (niedrig).</li>
+                                    <li><strong>Einstellungen:</strong> Unter Einstellungen → Benachrichtigungen können individuelle Kategorien ein-/ausgeschaltet werden.</li>
+                                </ul>
+                                <TipBox title="Automatische Deadline-Prüfung">
+                                    Das System prüft beim Login automatisch alle Aufgaben auf bevorstehende Deadlines und Veröffentlichungsdaten. So verpasst niemand eine wichtige Frist.
                                 </TipBox>
                             </div>
                         </AccordionItem>
@@ -199,13 +219,32 @@ export default function ManualPage() {
                                 <ul style={{ listStyleType: 'disc', paddingLeft: '24px', marginBottom: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                     <li><strong>To Do:</strong> Hier liegt alles, was du noch anfangen musst.</li>
                                     <li><strong>In Progress:</strong> Wechsle den Status hierauf, sobald du anfängst zu bearbeiten. So weiß der Manager: "Ah, da ist er dran".</li>
-                                    <li><strong>In Review:</strong> Du hast den OneDrive-Link hinzugefügt und dein Creative ist fertig? Setze den Status auf In Review. Das ist das Zeichen für den Manager, deine Arbeit freizugeben.</li>
+                                    <li><strong>In Review:</strong> Du hast den OneDrive-Link hinzugefügt und dein Creative ist fertig? Setze den Status auf In Review. Das ist das Zeichen für den Manager, deine Arbeit freizugeben. <strong>Der Manager erhält automatisch eine Benachrichtigung!</strong></li>
                                     <li><strong>Done:</strong> Sobald der Manager sein OK gegeben hat (oder der Content publiziert ist), wandert das Ticket auf "Done". Das macht primär der Manager, aber auch du kannst Tickets abschließen.</li>
                                 </ul>
+                                <TipBox title="Automatische Benachrichtigungen">
+                                    Jede Statusänderung im Kanban-Board löst automatisch eine Benachrichtigung an den Kampagnen-Manager aus. Besonders wichtig: Wenn du eine Aufgabe auf "In Review" setzt, bekommt der Manager sofort die Meldung "Aufgabe bereit zur Freigabe".
+                                </TipBox>
                                 <PlaceholderImage
                                     title="Das Kanban-Board" icon={CheckSquare} color="#14b8a6"
                                     description="Zeigt das Aufgaben-Board mit den Spalten 'To Do', 'In Bearbeitung', etc. und den verschiebbaren Aufgabenkarten."
                                 />
+                            </div>
+                        </AccordionItem>
+
+                        <AccordionItem title="5. Benachrichtigungen nutzen" icon={Bell} color="#6366f1">
+                            <div style={{ color: 'var(--text-secondary)', lineHeight: 1.7 }}>
+                                <p style={{ marginBottom: '16px' }}>Die <strong>Benachrichtigungs-Glocke</strong> oben rechts in der Kopfleiste hält dich über alles Wichtige auf dem Laufenden.</p>
+                                <ul style={{ listStyleType: 'disc', paddingLeft: '24px', marginBottom: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                    <li><strong>Neue Aufgaben:</strong> Wenn ein Manager dir eine neue Aufgabe zuweist, erhältst du sofort eine Benachrichtigung.</li>
+                                    <li><strong>Freigaben:</strong> Wird deine Aufgabe freigegeben ("Approved"), wirst du benachrichtigt.</li>
+                                    <li><strong>Deadline-Warnungen:</strong> Einen Tag vor Fälligkeit oder am Veröffentlichungstag bekommst du eine Erinnerung.</li>
+                                    <li><strong>KI-Ergebnisse:</strong> Sobald der KI-Agent einen Entwurf fertiggestellt hat, erhältst du eine Meldung.</li>
+                                    <li><strong>Klick auf Benachrichtigung:</strong> Ein Klick auf eine Meldung bringt dich direkt zur betroffenen Seite (z.B. Aufgaben-Board).</li>
+                                </ul>
+                                <TipBox title="Benachrichtigungen verwalten">
+                                    Du kannst alle Benachrichtigungen als gelesen markieren oder einzeln löschen. Unter Einstellungen → Benachrichtigungen lassen sich einzelne Kategorien auch komplett deaktivieren.
+                                </TipBox>
                             </div>
                         </AccordionItem>
                     </div>

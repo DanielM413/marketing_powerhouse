@@ -2,10 +2,10 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Calendar, CheckSquare, Clock, ArrowRight, User, ExternalLink, Globe, Edit2, Save, X, FileText, Trash2, Play } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { useTasks } from '../context/TaskContext';
 import { TaskAiAgent } from './TaskAiAgent';
 import { useContents, CONTENT_STATUSES } from '../context/ContentContext';
 import { useData } from '../context/DataContext';
+import { useNotifyActions } from '../hooks/useNotifyActions';
 import type { Task } from '../types';
 
 const UI_STATE_LABELS: Record<string, string> = {
@@ -20,7 +20,7 @@ interface TaskDetailModalProps {
 
 export default function TaskDetailModal({ task, onClose }: TaskDetailModalProps) {
     const { currentUser, can } = useAuth();
-    const { updateTask, deleteTask, executeAiAgent, sendAiFeedback } = useTasks();
+    const { notifyUpdateTask, notifyDeleteTask, notifyExecuteAiAgent, notifySendAiFeedback } = useNotifyActions();
     const { contents } = useContents();
     const { campaigns, users: testUsers, touchpoints } = useData();
     const [isEditing, setIsEditing] = useState(false);
@@ -45,7 +45,7 @@ export default function TaskDetailModal({ task, onClose }: TaskDetailModalProps)
     };
 
     const handleSave = () => {
-        updateTask(task.id, editedTask);
+        notifyUpdateTask(task.id, editedTask, task);
         setIsEditing(false);
         onClose();
     };
@@ -73,7 +73,7 @@ export default function TaskDetailModal({ task, onClose }: TaskDetailModalProps)
                         {canDelete && !isEditing && (
                             <button className="btn btn-ghost btn-sm btn-icon" style={{ color: '#ef4444' }} onClick={async () => {
                                 if (window.confirm('Möchtest du diese Aufgabe wirklich löschen?')) {
-                                    await deleteTask(task.id);
+                                    await notifyDeleteTask(task.id, task);
                                     onClose();
                                 }
                             }} title="Löschen">
@@ -205,9 +205,9 @@ export default function TaskDetailModal({ task, onClose }: TaskDetailModalProps)
                         task={task}
                         aiFeedbackText={aiFeedbackText}
                         setAiFeedbackText={setAiFeedbackText}
-                        updateTask={updateTask}
-                        executeAiAgent={executeAiAgent}
-                        sendAiFeedback={sendAiFeedback}
+                        updateTask={(id, data) => notifyUpdateTask(id, data, task)}
+                        executeAiAgent={(id, prompt, type) => notifyExecuteAiAgent(id, prompt, type, task)}
+                        sendAiFeedback={(id, feedback) => notifySendAiFeedback(id, feedback, task)}
                         getCampaignName={getCampaignName}
                     />
 

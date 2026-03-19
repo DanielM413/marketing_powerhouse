@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { Plus, X } from 'lucide-react';
-import { useContents } from '../context/ContentContext';
-import { useTasks } from '../context/TaskContext';
 import { useData } from '../context/DataContext';
 import { useAuth } from '../context/AuthContext';
+import { useNotifyActions } from '../hooks/useNotifyActions';
 
 interface NewContentModalProps {
     onClose: () => void;
@@ -11,8 +10,7 @@ interface NewContentModalProps {
 }
 
 export default function NewContentModal({ onClose, defaultCampaignId }: NewContentModalProps) {
-    const { addContent } = useContents();
-    const { addTask } = useTasks();
+    const { notifyAddContent, notifyAddTask } = useNotifyActions();
     const { campaigns, touchpoints } = useData();
     const { currentUser } = useAuth();
 
@@ -25,7 +23,7 @@ export default function NewContentModal({ onClose, defaultCampaignId }: NewConte
     const handleCreate = async () => {
         if (!newContent.title.trim()) return;
 
-        const contentId = await addContent({
+        const contentId = await notifyAddContent({
             title: newContent.title,
             description: newContent.description,
             publishDate: newContent.publishDate || null,
@@ -40,7 +38,7 @@ export default function NewContentModal({ onClose, defaultCampaignId }: NewConte
         });
 
         if (newContent.createTasks && contentId) {
-            await addTask({
+            await notifyAddTask({
                 title: `Aufgabe für: ${newContent.title}`,
                 status: 'draft' as import('../types').TaskStatus,
                 assignee: '',

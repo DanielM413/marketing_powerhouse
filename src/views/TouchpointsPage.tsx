@@ -3,6 +3,7 @@ import { useSearchParams } from 'next/navigation';
 import { Share2, Plus, Edit, MoreVertical, TrendingUp, Users, Map, Target, Heart, Megaphone, CheckCircle2, Link as LinkIcon, ListTodo, ExternalLink, Edit2, Trash2, Eye, MousePointerClick, DollarSign } from 'lucide-react';
 import { useData } from '../context/DataContext';
 import { useAuth } from '../context/AuthContext';
+import { useNotifyActions } from '../hooks/useNotifyActions';
 import PageHelp from '../components/PageHelp';
 import TouchpointDetailModal from '../components/TouchpointDetailModal';
 import NewTouchpointModal from '../components/NewTouchpointModal';
@@ -21,7 +22,8 @@ const TYPE_COLORS = {
 export default function TouchpointsPage() {
     const { can } = useAuth();
     const searchParams = useSearchParams();
-    const { touchpoints, addTouchpoint, updateTouchpoint, deleteTouchpoint } = useData();
+    const { touchpoints } = useData();
+    const { notifyAddTouchpoint, notifyUpdateTouchpoint, notifyDeleteTouchpoint } = useNotifyActions();
     const canManage = can('canManageTouchpoints');
 
     const [selectedTpId, setSelectedTpId] = useState<string | null>(
@@ -152,11 +154,13 @@ export default function TouchpointsPage() {
                     touchpoint={selectedTp}
                     onClose={() => setSelectedTpId(null)}
                     onDelete={async (id) => {
-                        await deleteTouchpoint(id);
+                        const tp = touchpoints.find(t => t.id === id);
+                        await notifyDeleteTouchpoint(id, tp);
                         setSelectedTpId(null);
                     }}
                     onSave={async (updatedTp) => {
-                        await updateTouchpoint(updatedTp.id, updatedTp);
+                        const tp = touchpoints.find(t => t.id === updatedTp.id);
+                        await notifyUpdateTouchpoint(updatedTp.id, updatedTp, tp);
                     }}
                 />
             )}
@@ -165,7 +169,7 @@ export default function TouchpointsPage() {
                 <NewTouchpointModal
                     onClose={() => setShowNewModal(false)}
                     onCreate={async (newTp) => {
-                        await addTouchpoint(newTp);
+                        await notifyAddTouchpoint(newTp);
                         setShowNewModal(false);
                     }}
                 />

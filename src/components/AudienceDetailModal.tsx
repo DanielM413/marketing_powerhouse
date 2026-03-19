@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Megaphone, X, Edit, Check, Trash2 } from 'lucide-react';
 import { useData } from '../context/DataContext';
 import { useAuth } from '../context/AuthContext';
+import { useNotifyActions } from '../hooks/useNotifyActions';
 import type { Audience } from '../types';
 
 const segmentConfig: Record<string, { badge: string; label: string }> = {
@@ -21,7 +22,8 @@ interface AudienceDetailModalProps {
 
 export default function AudienceDetailModal({ audience, onClose }: AudienceDetailModalProps) {
     const { can } = useAuth();
-    const { campaigns, updateAudience, deleteAudience } = useData();
+    const { campaigns } = useData();
+    const { notifyUpdateAudience, notifyDeleteAudience } = useNotifyActions();
     const canEdit = can('canEditAudiences');
     const canDelete = can('canDeleteItems');
 
@@ -32,7 +34,7 @@ export default function AudienceDetailModal({ audience, onClose }: AudienceDetai
         campaigns.filter(c => c.targetAudiences?.includes(audienceId));
 
     const handleSave = async () => {
-        await updateAudience(audience.id, editedAudience);
+        await notifyUpdateAudience(audience.id, editedAudience, audience);
         setEditMode(false);
     };
 
@@ -73,7 +75,7 @@ export default function AudienceDetailModal({ audience, onClose }: AudienceDetai
                         {canDelete && (
                             <button className="btn btn-ghost btn-sm btn-icon" style={{ color: '#ef4444' }} onClick={async () => {
                                 if (window.confirm('Möchtest du diese Persona wirklich löschen?')) {
-                                    await deleteAudience(audience.id);
+                                    await notifyDeleteAudience(audience.id, audience);
                                     onClose();
                                 }
                             }} title="Löschen">

@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import { useData } from '../context/DataContext';
 import { useAuth, ROLE_CONFIG } from '../context/AuthContext';
+import { useNotifications, type NotificationSettings } from '../context/NotificationContext';
 
 import { AdminSettings } from '../components/SettingsAdmin';
 const integrations = [
@@ -26,6 +27,7 @@ const statusDot = (s) => ({
 export default function SettingsPage() {
     const { can, currentUser } = useAuth();
     const { teamMembers } = useData();
+    const { settings: notifSettings, updateSettings: updateNotifSettings } = useNotifications();
     const [activeTab, setActiveTab] = useState('general');
     const [wsName, setWsName] = useState('WAMOCON Academy');
     const [wsDesc, setWsDesc] = useState('Zentraler Workspace für alle Marketing-Aktivitäten unseres Teams.');
@@ -252,14 +254,14 @@ export default function SettingsPage() {
                             <div className="card-header">
                                 <div className="card-title">Benachrichtigungs-Einstellungen</div>
                             </div>
-                            {[
-                                { title: 'Kampagnen-Updates', desc: 'Benachrichtigung bei Statusänderungen', enabled: true },
-                                { title: 'Budget-Alerts', desc: 'Warnung bei Budgetüberschreitung (80%)', enabled: true },
-                                { title: 'Aufgaben-Erinnerungen', desc: 'Erinnerung 24h vor Deadline', enabled: true },
-                                { title: 'Team-Aktivitäten', desc: 'Neue Kommentare und Freigaben', enabled: false },
-                                { title: 'Wöchentlicher Report', desc: 'Zusammenfassung per E-Mail', enabled: true },
-                                { title: 'KPI-Anomalien', desc: 'Benachrichtigung bei ungewöhnlichen KPI-Werten', enabled: false },
-                            ].map((setting, idx) => (
+                            {([
+                                { key: 'campaignUpdates' as keyof NotificationSettings, title: 'Kampagnen-Updates', desc: 'Benachrichtigung bei Statusänderungen und Teamänderungen' },
+                                { key: 'budgetAlerts' as keyof NotificationSettings, title: 'Budget-Alerts', desc: 'Warnung bei Budgetüberschreitung (80%, 90%, 100%)' },
+                                { key: 'taskReminders' as keyof NotificationSettings, title: 'Aufgaben-Erinnerungen', desc: 'Erinnerung 24h vor Deadline und bei fälligen Veröffentlichungen' },
+                                { key: 'teamActivities' as keyof NotificationSettings, title: 'Team-Aktivitäten', desc: 'Statusänderungen, Content-Updates und Freigaben' },
+                                { key: 'weeklyReport' as keyof NotificationSettings, title: 'Wöchentlicher Report', desc: 'Zusammenfassung per E-Mail' },
+                                { key: 'kpiAnomalies' as keyof NotificationSettings, title: 'KPI-Anomalien', desc: 'Benachrichtigung bei ungewöhnlichen KPI-Werten' },
+                            ] as const).map((setting, idx) => (
                                 <div key={idx} style={{
                                     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                                     padding: '16px 0', borderBottom: idx < 5 ? '1px solid var(--border-color)' : 'none',
@@ -268,23 +270,32 @@ export default function SettingsPage() {
                                         <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500 }}>{setting.title}</div>
                                         <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginTop: '2px' }}>{setting.desc}</div>
                                     </div>
-                                    <button style={{
-                                        width: '44px', height: '24px', borderRadius: 'var(--radius-full)',
-                                        background: setting.enabled ? 'var(--color-primary)' : 'var(--bg-elevated)',
-                                        border: `1px solid ${setting.enabled ? 'var(--color-primary)' : 'var(--border-color-strong)'}`,
-                                        position: 'relative', cursor: 'pointer', transition: 'all var(--transition-fast)',
-                                    }}>
+                                    <button
+                                        onClick={() => updateNotifSettings({ [setting.key]: !notifSettings[setting.key] })}
+                                        aria-pressed={notifSettings[setting.key]}
+                                        aria-label={`${setting.title} ${notifSettings[setting.key] ? 'deaktivieren' : 'aktivieren'}`}
+                                        style={{
+                                            width: '48px', height: '28px', borderRadius: 'var(--radius-full)',
+                                            background: notifSettings[setting.key]
+                                                ? 'linear-gradient(135deg, var(--color-primary), var(--color-primary-hover))'
+                                                : 'rgba(148, 163, 184, 0.28)',
+                                            border: `1px solid ${notifSettings[setting.key] ? 'rgba(99, 102, 241, 0.9)' : 'rgba(148, 163, 184, 0.5)'}`,
+                                            boxShadow: notifSettings[setting.key]
+                                                ? '0 0 0 1px rgba(99, 102, 241, 0.25), inset 0 1px 0 rgba(255,255,255,0.14)'
+                                                : 'inset 0 1px 0 rgba(255,255,255,0.06)',
+                                            position: 'relative', cursor: 'pointer', transition: 'all var(--transition-fast)',
+                                        }}>
                                         <div style={{
-                                            width: '18px', height: '18px', borderRadius: '50%', background: 'white',
-                                            position: 'absolute', top: '2px',
-                                            left: setting.enabled ? '22px' : '2px', transition: 'left var(--transition-fast)',
+                                            width: '20px', height: '20px', borderRadius: '50%',
+                                            background: notifSettings[setting.key] ? 'var(--bg-surface)' : '#f8fafc',
+                                            border: '1px solid rgba(15, 23, 42, 0.18)',
+                                            boxShadow: '0 1px 3px rgba(15, 23, 42, 0.28)',
+                                            position: 'absolute', top: '3px',
+                                            left: notifSettings[setting.key] ? '24px' : '3px', transition: 'left var(--transition-fast)',
                                         }} />
                                     </button>
                                 </div>
                             ))}
-                            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '24px' }}>
-                                <button className="btn btn-primary">Einstellungen speichern</button>
-                            </div>
                         </div>
                     )}
 

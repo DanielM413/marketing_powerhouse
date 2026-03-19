@@ -6,13 +6,15 @@ import {
 } from 'lucide-react';
 import { useData } from '../context/DataContext';
 import { useAuth } from '../context/AuthContext';
+import { useNotifyActions } from '../hooks/useNotifyActions';
 import PageHelp from '../components/PageHelp';
 import { SectionHeader, Field, CommsContent } from '../components/PositioningComponents';
 
 export default function PositioningPage() {
     const { can } = useAuth();
     const router = useRouter();
-    const { positioning, companyKeywords, savePositioning, addKeyword, deleteKeyword } = useData();
+    const { positioning, companyKeywords, addKeyword, deleteKeyword } = useData();
+    const { notifySavePositioning } = useNotifyActions();
     const [pos, setPos] = useState(positioning);
     const [editSection, setEditSection] = useState<string | null>(null);
     const [newKeywordTerm, setNewKeywordTerm] = useState('');
@@ -35,7 +37,7 @@ export default function PositioningPage() {
         setOpenSections(prev => ({ ...prev, [id]: true }));
     };
     const handleSave = () => {
-        savePositioning(pos);
+        notifySavePositioning(pos);
         setEditSection(null);
     };
     const handleCancel = () => setEditSection(null);

@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { X, Save } from 'lucide-react';
-import { useTasks } from '../context/TaskContext';
 import { useAuth } from '../context/AuthContext';
 import { useData } from '../context/DataContext';
+import { useNotifyActions } from '../hooks/useNotifyActions';
 import type { Task } from '../types';
 
 interface NewTaskModalProps {
@@ -10,7 +10,7 @@ interface NewTaskModalProps {
 }
 
 export default function NewTaskModal({ onClose }: NewTaskModalProps) {
-    const { addTask } = useTasks();
+    const { notifyAddTask } = useNotifyActions();
     const { currentUser } = useAuth();
     const { campaigns, users: testUsers, touchpoints } = useData();
     
@@ -29,7 +29,7 @@ export default function NewTaskModal({ onClose }: NewTaskModalProps) {
     const handleSave = () => {
         if (!title.trim()) return;
         
-        addTask({
+        notifyAddTask({
             title,
             description,
             type,

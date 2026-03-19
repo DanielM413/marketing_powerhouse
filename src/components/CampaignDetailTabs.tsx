@@ -5,6 +5,7 @@ import {
     Instagram, Youtube, Linkedin, Facebook, Globe, Target, UserCheck, UsersRound, Check,
 } from 'lucide-react';
 import { useData } from '../context/DataContext';
+import { useNotifyActions } from '../hooks/useNotifyActions';
 import { PLATFORM_ICONS, CREATIVE_TYPES, MiniCalendar } from './CampaignDetailComponents';
 
 interface OverviewTabProps {
@@ -33,7 +34,8 @@ export function CampaignOverviewTab({
     masterPromptExpanded, setMasterPromptExpanded, promptEditMode, setPromptEditMode,
     promptValue, setPromptValue,
 }: OverviewTabProps) {
-    const { touchpoints, companyKeywords, users, updateCampaign } = useData();
+    const { touchpoints, companyKeywords, users } = useData();
+    const { notifyUpdateCampaign } = useNotifyActions();
     const responsibleManager = users.find(u => u.id === campaign.responsibleManagerId);
     const teamMembers = users.filter(u => campaign.teamMemberIds?.includes(u.id));
     const managers = users.filter(u => u.role === 'admin' || u.role === 'manager');
@@ -56,7 +58,7 @@ export function CampaignOverviewTab({
         setSaving(true);
         setSaveError(null);
         try {
-            await updateCampaign(campaign.id, {
+            await notifyUpdateCampaign(campaign.id, {
                 responsibleManagerId: editManagerId,
                 teamMemberIds: editTeamIds,
                 owner: users.find(u => u.id === editManagerId)?.name ?? campaign.owner,
